@@ -1,14 +1,14 @@
 import React from 'react';
 
-const Home_Page = () => {
+const homepage = () => {
   return (
     <div style={{ textAlign: 'center' }}>
       <h1>
-        Emaily!
+        PLUSHIEEES
       </h1>
-      Collect feedback from your users
+      Display plushie images and stuff here
     </div>
   )
 }
 
-export default Home_Page;
+export default homepage;

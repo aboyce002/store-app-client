@@ -3,9 +3,9 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 
+import Footer from './Footer';
 import Header from './Header';
-import Home_Page from './Home_Page';
-const Footer = () => <h2>Footer</h2>
+import Homepage from './Homepage';
 const Dashboard = () => <h2>Dashboard</h2>
 const SurveyNew = () => <h2>SurveyNew</h2>
 
@@ -18,13 +18,13 @@ class App extends Component {
     return (
       <div className="App container">
         <BrowserRouter>
-          <div>
+          <>
             <Header />
-            <Route exact={true} path="/" component={Home_Page} />
+            <Route exact={true} path="/" component={Homepage} />
             <Route exact={true} path="/surveys" component={Dashboard} />
             <Route exact={true} path="/surveys/new" component={SurveyNew} />
             <Footer />
-          </div>
+          </>
         </BrowserRouter>
       </div>
     );
