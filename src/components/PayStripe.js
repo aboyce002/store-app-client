@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import StripeCheckout from 'react-stripe-checkout';
 import { connect } from 'react-redux';
-import * as actions from "../actions";
+import * as actions from "../utils/actions";
 
-class payStripe extends Component {
+class PayStripe extends Component {
   render() {
     return ( 
       <StripeCheckout
@@ -21,4 +21,4 @@ class payStripe extends Component {
   }
 }
 
-export default connect(null, actions)(payStripe);
+export default connect(null, actions)(PayStripe);
