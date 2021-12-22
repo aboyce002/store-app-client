@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import  { Redirect } from 'react-router-dom'
-import { Stack, Spacer, Flex, Box, HStack } from '@chakra-ui/react'
+import { Link, Redirect } from 'react-router-dom';
+import { FcGoogle } from 'react-icons/fc';
+import { Stack, Spacer, Flex, Box, HStack, Button, Center, Text } from '@chakra-ui/react'
 
 class LogIn extends Component {
   renderContent() {
@@ -10,7 +10,15 @@ class LogIn extends Component {
       case null:
         return <Box>Loading...</Box>;
       case false:
-        return <Box><a href="/auth/google">Login With Google</a></Box>;
+        return <Box>            
+        <a href="/auth/google">
+          <Button w={'full'} variant={'outline'} leftIcon={<FcGoogle />}>
+            <Center>
+              <Text>Sign in with Google</Text>
+            </Center>
+          </Button>
+        </a>
+      </Box>;
       default:
         return [
           <Redirect to='/'/>,

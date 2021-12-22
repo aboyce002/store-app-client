@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Stack, Spacer, Flex, Box, VStack } from '@chakra-ui/react'
 import ProductList from '../../components/productList/ProductList';
+import Products from '../../components/products/Products';
 
 class Search extends Component {
   renderContent() {
@@ -19,6 +20,7 @@ class Search extends Component {
     return (
       <VStack spacing="24px">
         <Box><ProductList/></Box>;
+        <Box><Products/></Box>;
       </VStack>
     )
   }

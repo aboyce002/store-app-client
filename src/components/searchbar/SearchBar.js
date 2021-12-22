@@ -1,101 +1,49 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link, useHistory, withRouter } from 'react-router-dom';
 import * as actions from "../../utils/actions";
-import { Box, Input, FormControl, FormErrorMessage, Button, SubmitButton, HStack } from '@chakra-ui/react'
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Box, Input, FormControl, FormErrorMessage, Form, Field, Button, SubmitButton, FormLabel, HStack } from '@chakra-ui/react'
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
 import { FiSearch } from 'react-icons/fi';
 import fakeStoreApi from '../../api/fakeStoreApi';
 import ProductList from '../productList/ProductList';
 
-class SearchBar extends Component {
-  state = {term: '', productList: []};
+const SearchBar = () => {
+  //state = {term: '', productList: []};
 
-  //products: this.props.fetchProduct(), 
-  //const [products, setProducts] = useState([]);
+  //products: this.props.fetchProduct();
+  const [searchValue, setSearchValue] = useState([]);
+  const [products, setProducts] = useState([]);
+  const { field, register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm();
 
-/*  onInputChange = (event) => {
-    //console.log(event.target.value);
-    console.log(this.state.term);
-  }*/
-
-/*  onSubmit = (actions, values) => {
-    fakeStoreApi.get('/products', {
-      //params: { query: this.state.term }
-    }).then(res=>res.json())
-    .then(json=>console.log(json));
-
-    const { history } = this.props;
-    history.push('/search');
-    setTimeout(() => {
-      alert(JSON.stringify(values, null, 2));
-      actions.setSubmitting(false);ss
-    }, 1000);
-  }*/
-
-  submitForm = async term =>  {
+  const onSubmit = async term =>  {
     const response = await fakeStoreApi.get('/products', {
+      //use searchValue here
       //params: { query: this.state.term }
     });
-    this.setState({productList: response.data});
-    //console.log(this.state.term);
-    //}).then(json=>console.log(json));
-
-    //const { history } = this.props
-    //history.push('/search');
+    console.log(response.data);
+    setProducts(response.data);
+    console.log("Products: " + products);
   }
 
-/*  handleSubmit = (values, formikBag, actions) => {
-    actions.setSubmitting(true)
-    console.log(values)
-    console.log(actions)
-    
-    this.submitForm();
-}*/
-
-  render() {
-    return (/*
-        <Formik
-           validate={values => {
-            const errors = {};
-            if (!values.search) {
-              errors.search = '';
-            }
-            return errors;
-          }}
-          initialValues={{ term: this.state.term }}
-          onSubmit={this.onSubmit}
-        >
-          {(props, handleSubmit) => (
-              <Form onSubmit={handleSubmit}>
-                <HStack>
-                    <Box>
-                      <Field name="search">
-                        {({props, field, form }) => (
-                          <FormControl>
-                            <Input {...field} id="search" variant="outline" color="black" bg="white" onChange={(event) => {this.setState({ term: event.target.value }); this.onInputChange(event);}}/>
-                            <ErrorMessage name="search" component="div" />
-                          </FormControl>
-                        )}
-                      </Field>
-                    </Box>
-                    <Box>
-                      <button bg="none" type="submit">
-                        <FiSearch/>
-                      </button>
-                    </Box>
-                </HStack>
-              </Form>
-          )}
-        </Formik>*/
-        <>
-        <button bg="none" onClick={this.submitForm}>
-          <FiSearch/>
-        </button>
-        <ProductList productList={this.state.productList}/>
-        </>
-    )
-  }
-}
-
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <HStack>
+          <Box>
+              <FormControl isInvalid={errors.name}>
+                <Input {...field} id="search" variant="outline" color="black" bg="white" onChange={(event) => {setSearchValue( event.target.value )}}/>
+                <FormErrorMessage name="search" component="div"> {errors.name && errors.name.message} </FormErrorMessage>
+              </FormControl>
+          </Box>
+          <Box>
+            <Button colorScheme='teal' isLoading={isSubmitting} bg="none" type="submit">
+              <FiSearch/>
+            </Button>
+          </Box>
+      </HStack>
+    </form>
+  )
+};
+//<ProductList productList={this.state.productList}/>
 export default connect(null, actions)(withRouter(SearchBar));
