@@ -1,6 +1,4 @@
-import React from 'react';
-
-const checkout = () => {
+const Checkout = () => {
   return (
     <div style={{ textAlign: 'center' }}>
       <h1>
@@ -10,4 +8,4 @@ const checkout = () => {
   )
 }
 
-export default checkout;
+export default Checkout;

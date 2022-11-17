@@ -1,12 +1,13 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Stack, Spacer, Flex, Box, VStack } from '@chakra-ui/react'
 import ProductList from '../../components/productList/ProductList';
-import Products from '../../components/products/Products';
+import { getProducts } from '../../utils/products/productsSlice';
 
-class Search extends Component {
-  renderContent() {
-    switch (this.props.product){ 
+const Search = () => {
+  const productList = useSelector(getProducts);
+
+  const renderContent = () => {
+    switch (productList){ 
       case null:
         return <Box>Loading...</Box>;
       case false:
@@ -16,18 +17,11 @@ class Search extends Component {
   }
 }
 
-  render() {
-    return (
-      <VStack spacing="24px">
-        <Box><ProductList/></Box>;
-        <Box><Products/></Box>;
-      </VStack>
-    )
-  }
+  return (
+    <VStack spacing="24px">
+      {renderContent()}
+    </VStack>
+  )
 }
 
-function mapStateToProps({ product }) {
-  return { product };
-}
-
-export default connect(mapStateToProps)(Search);
+export default Search;

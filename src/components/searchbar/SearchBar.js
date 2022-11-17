@@ -1,35 +1,35 @@
-import React, { Component, useState } from 'react';
-import { connect } from 'react-redux';
-import { Link, useHistory, withRouter } from 'react-router-dom';
-import * as actions from "../../utils/actions";
-import { Box, Input, FormControl, FormErrorMessage, Form, Field, Button, SubmitButton, FormLabel, HStack } from '@chakra-ui/react'
+import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Link, withRouter } from 'react-router-dom';
+import { Box, Input, FormControl, FormErrorMessage, Form, Field, Button, SubmitButton, FormLabel, HStack, Select } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { FiSearch } from 'react-icons/fi';
-import fakeStoreApi from '../../api/fakeStoreApi';
-import ProductList from '../productList/ProductList';
+import { fetchProducts, getProducts } from '../../utils/products/productsSlice';
 
 const SearchBar = () => {
-  //state = {term: '', productList: []};
-
-  //products: this.props.fetchProduct();
   const [searchValue, setSearchValue] = useState([]);
-  const [products, setProducts] = useState([]);
-  const { field, register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm();
+  const [categoryValue, setCategoryValue] = useState([]);
+  const { field, handleSubmit, formState: { errors, isSubmitting } } = useForm();
+  const productList = useSelector(getProducts);
+  const dispatch = useDispatch();
 
-  const onSubmit = async term =>  {
-    const response = await fakeStoreApi.get('/products', {
-      //use searchValue here
-      //params: { query: this.state.term }
-    });
-    console.log(response.data);
-    setProducts(response.data);
-    console.log("Products: " + products);
+  const onSubmit = async () => {
+    dispatch(fetchProducts());
+    console.log("Products: " + productList);
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <HStack>
+          <Box>
+          <Select color='black' bgColor='white' placeholder='Select category' onChange={(event) => {setCategoryValue( event.target.value )}}>
+            <option value='charms'>Charms</option>
+            <option value='plushies'>Plushies</option>
+            <option value='prints'>Prints</option>
+            <option value='stickers'>Stickers</option>
+          </Select>
+          </Box>
           <Box>
               <FormControl isInvalid={errors.name}>
                 <Input {...field} id="search" variant="outline" color="black" bg="white" onChange={(event) => {setSearchValue( event.target.value )}}/>
@@ -37,13 +37,18 @@ const SearchBar = () => {
               </FormControl>
           </Box>
           <Box>
-            <Button colorScheme='teal' isLoading={isSubmitting} bg="none" type="submit">
-              <FiSearch/>
-            </Button>
+            <Link to={{
+              pathname: "/search",
+              search: "?title=" + searchValue + "&category=" + categoryValue
+            }} onClick={onSubmit}>
+              <Button colorScheme='teal' isLoading={isSubmitting} bg="none">
+                <FiSearch/>
+              </Button>
+            </Link>
           </Box>
       </HStack>
     </form>
   )
 };
-//<ProductList productList={this.state.productList}/>
-export default connect(null, actions)(withRouter(SearchBar));
+
+export default SearchBar;

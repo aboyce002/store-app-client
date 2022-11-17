@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Box, HStack } from '@chakra-ui/react';
-import fakeStoreApi from '../../api/fakeStoreApi';
+import ProductDataService from "../../utils/services/productService";
 
 const Products = () => {
   const [data, setData] = useState([]);
 
-  useEffect(async () => {
-    const response = await fakeStoreApi.get('/products', {
-      //use searchValue here
-      //params: { query: this.state.term }
-    });
+  /*useEffect(async () => {
+    const response = await ProductDataService.getAll();
 
     setData(response.data);
-  });
+  });*/
   
   return (
     <>

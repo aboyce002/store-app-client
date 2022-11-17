@@ -1,16 +1,27 @@
-import React from "react";
-import { Box, HStack } from '@chakra-ui/react';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { Box, SimpleGrid } from '@chakra-ui/react';
+import { getProducts } from '../../utils/products/productsSlice';
 
-const ProductList = props => {
-  console.log(props.productList);
+const ProductList = () => {
+  const productList = useSelector(getProducts);
+  console.log("product from context: " + productList);
 
-  const products = props.productList.map(({id, title, image}) => {
-    return <Box style={{width: '50px'}} key={id}>
+  if(productList){
+    const products = productList.map(({id, title, description, category, image, price, quantity, condition, availability}) => (
+    <Box w={350} key={id}>
+      <Link to={{
+        pathname: "/product",
+        search: "?title=" + title
+      }}>
         <img alt={title} src={image}/>
-      </Box>
-  });
+      </Link>
+    </Box>
+    ));
 
-  return <HStack>{products}</HStack>;
-};
+    return <SimpleGrid columns={3} spacing={8} direction='row'>{products}</SimpleGrid>
+  }
+  else return <p>No products were found.</p>
+}
 
 export default ProductList;

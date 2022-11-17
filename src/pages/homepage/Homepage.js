@@ -1,6 +1,4 @@
-import React from 'react';
-
-const homepage = () => {
+const Homepage = () => {
   return (
     <div style={{ textAlign: 'center' }}>
       <h1>
@@ -11,4 +9,4 @@ const homepage = () => {
   )
 }
 
-export default homepage;
+export default Homepage;

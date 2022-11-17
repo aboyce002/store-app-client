@@ -1,6 +1,4 @@
-import React from 'react';
-
-const account = () => {
+const Account = () => {
   return (
     <div style={{ textAlign: 'center' }}>
       <h1>
@@ -10,4 +8,4 @@ const account = () => {
   )
 }
 
-export default account;
+export default Account;

@@ -1,12 +1,14 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Link, Redirect } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Link, Navigate } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
 import { Stack, Spacer, Flex, Box, HStack, Button, Center, Text } from '@chakra-ui/react'
+import { getUser, getCredits } from '../../utils/user/userSlice';
 
-class LogIn extends Component {
-  renderContent() {
-    switch (this.props.auth){ 
+const LogIn = () => {
+  const user = useSelector(getUser);
+
+  const renderContent = () => {
+    switch (user){ 
       case null:
         return <Box>Loading...</Box>;
       case false:
@@ -21,28 +23,22 @@ class LogIn extends Component {
       </Box>;
       default:
         return [
-          <Redirect to='/'/>,
+          <Navigate replace to='/'/>,
           <p>You are already logged in. Redirecting...</p>
         ];
+    }
   }
+
+  return (
+    <HStack spacing="24px">
+      <Link to={user ? '/' : '/login'} className="left logo">
+        Log in page
+      </Link>
+      <Box className="right">
+      {renderContent()}
+      </Box>
+    </HStack>
+  )
 }
 
-  render() {
-    return (
-      <HStack spacing="24px">
-        <Link to={this.props.auth ? '/' : '/login'} className="left logo">
-          Log in page
-        </Link>
-        <Box className="right">
-          {this.renderContent()}
-        </Box>
-      </HStack>
-    )
-  }
-}
-
-function mapStateToProps({ auth }) {
-  return { auth };
-}
-
-export default connect(mapStateToProps)(LogIn);
+export default LogIn;

@@ -14,7 +14,7 @@ export const handleToken = (token) => async dispatch => {
 };
 
 export const fetchProducts = () => async dispatch => {
-    const res = await axios.get('https://fakestoreapi.com/products');
+    const res = await axios.get('/api/products');
     const data = res.data;
     console.log("Products from actions:" + data);
     dispatch({ type: FETCH_PRODUCTS, payload: res.data });
