@@ -1,27 +1,32 @@
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { Box, SimpleGrid } from '@chakra-ui/react';
-import { getProducts } from '../../utils/products/productsSlice';
+import { Link, useSearchParams } from 'react-router-dom';
+import { Box } from '@chakra-ui/react';
+import { filterProductsByCategory, getProducts } from '../../utils/products/productsSlice';
 
-const ProductList = () => {
+const ProductList = ({getProductList}) => {
+  // Make this be able to hold products returned from whatever search parameters
+  const [searchParams] = useSearchParams();
   const productList = useSelector(getProducts);
-  console.log("product from context: " + productList);
-
+  // const productList = useSelector(state => filterProductsByCategory(state, searchParams.get('category')));
+  // const productList = useSelector(getProducts);
+  useEffect(() => {
+    getProductList(productList);
+  });
+  // return productList.map(({id, title, description, category, image, price, quantity, condition, availability}) => (
   if(productList){
-    const products = productList.map(({id, title, description, category, image, price, quantity, condition, availability}) => (
-    <Box w={350} key={id}>
+    return productList.map(product => (
+    <Box w={350} key={product.id}>
       <Link to={{
         pathname: "/product",
-        search: "?title=" + title
+        search: "?id=" + product.id + "&title=" + product.title
       }}>
-        <img alt={title} src={image}/>
+        <img alt={product.title} src={product.image}/>
       </Link>
     </Box>
     ));
-
-    return <SimpleGrid columns={3} spacing={8} direction='row'>{products}</SimpleGrid>
   }
-  else return <p>No products were found.</p>
+  else return null;
 }
 
 export default ProductList;

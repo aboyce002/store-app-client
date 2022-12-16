@@ -1,29 +1,24 @@
-import { useContext } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { useSearchParams  } from "react-router-dom";
 import { Box, SimpleGrid} from '@chakra-ui/react'
-import { GlobalContext } from '../../utils old/contexts/GlobalState';
+import { getProductById } from '../../utils/products/productsSlice';
 
-const ProductSelect = () => {
-  const { title, availability, category } = useParams();
-  const { selectedProduct, fetchProductByParams } = useContext(GlobalContext);
-  console.log("product fetched from API: " + selectedProduct);
-  fetchProductByParams(title, availability, category);
+const ProductSelect = ({getProduct}) => {
+  // Gets data of one product to display on the product page
+  const [searchParams] = useSearchParams();
+  const product = useSelector(state => getProductById(state, parseInt(searchParams.get('id'))));
+  useEffect(() => {
+    getProduct(product);
+  });
 
-  if(selectedProduct){
-    const products = selectedProduct.map(({id, title, description, category, image, price, quantity, condition, availability}) => (
-    <Box w={350} key={id}>
-      <img alt={title} src={image}/>
-    </Box>
-    ));
-
-    return <SimpleGrid columns={3} spacing={8} direction='row'>{products}</SimpleGrid>
+  if(product){
+    return <SimpleGrid columns={3} spacing={8} direction='row'>
+      <Box w={350} key={product.id}>
+        <img alt={product.title} src={product.image}/>
+      </Box>
+    </SimpleGrid>
   }
-
-  /*
-  const { productList, fetchProductByParams } = useContext(GlobalContext);
-  let { productId } = useParams();
-  let product = fetchProductByParams(`/api/products/${productId}`);
-  */
 }
 
 export default ProductSelect;

@@ -1,25 +1,27 @@
-import { useSelector } from 'react-redux';
-import { Stack, Spacer, Flex, Box, VStack } from '@chakra-ui/react'
+import { useState } from 'react';
+import { Box, VStack, SimpleGrid } from '@chakra-ui/react'
 import ProductList from '../../components/productList/ProductList';
-import { getProducts } from '../../utils/products/productsSlice';
 
 const Search = () => {
-  const productList = useSelector(getProducts);
-
+  const [products, setProducts] = useState('');
+  const getProductList = (productsData) => {
+    setProducts(productsData);
+  }
+  
   const renderContent = () => {
-    switch (productList){ 
+    switch (products){ 
       case null:
         return <Box>Loading...</Box>;
       case false:
         return <Box>Error: Cannot fetch products</Box>;
       default:
-        return <Box><ProductList/></Box>;
+        return <ProductList getProductList={getProductList}/>;
   }
 }
 
   return (
     <VStack spacing="24px">
-      {renderContent()}
+      <SimpleGrid columns={3} spacing={8} direction='row'>{renderContent()}</SimpleGrid>
     </VStack>
   )
 }
