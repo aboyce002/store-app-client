@@ -22,7 +22,7 @@ const App = () => {
   });
 
   return (
-    <Flex className="App" direction="column">
+    <Flex className="App" direction="column" minH="100vh">
       <BrowserRouter>
         <Header/>
         <Main>

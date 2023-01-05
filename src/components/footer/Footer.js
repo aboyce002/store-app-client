@@ -1,25 +1,25 @@
-import { Box, Flex, HStack, Stack, VStack, Spacer, StackDivider } from '@chakra-ui/react'
+import { Box, Flex, HStack, Stack, VStack, Spacer, StackDivider, Text } from '@chakra-ui/react'
 
 const Footer = () => {
   return (
-  <Box as="footer" alignItems='center' role="contentinfo" w="100%" p={2} color="white" bgGradient="linear(to-l, #410F9E,#0F979C)">      
+  <Box as="footer" alignItems='center' role="contentinfo" w="100%" p={2} color="white" bgColor="#7E1F69">      
     <VStack spacing={0}>
       <Box className="left">
-        <p>@Aaaaaaaaaaaa, 2021. All rights reserved.</p>
+        <Text fontSize="12px">@Aaaaaaaaaaaa, 2021. All rights reserved.</Text>
       </Box>
 
       <HStack>
         <Box className="right">
-          <p>Terms of Service </p>
+          <Text fontSize="12px">Terms of Service </Text>
         </Box>
         <Box className="right">
-          <p>| Privacy Policy</p>
+          <Text fontSize="12px">| Privacy Policy</Text>
         </Box>
         <Box className="right">
-          <p>| About Us</p>
+          <Text fontSize="12px">| About Us</Text>
         </Box>
         <Box className="right">
-          <p>| Contact us</p>
+          <Text fontSize="12px">| Contact us</Text>
         </Box>
       </HStack>
     </VStack>

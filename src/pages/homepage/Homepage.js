@@ -1,11 +1,19 @@
+import { Box, Flex, HStack, VStack, Spacer, Image } from '@chakra-ui/react';
+
 const Homepage = () => {
   return (
-    <div style={{ textAlign: 'center' }}>
-      <h1>
-        PLUSHIEEES
-      </h1>
-      Display plushie images and stuff here
-    </div>
+    <Flex>
+      <VStack>
+        <Box style={{ textAlign: 'center' }}>
+          <Image src={require('../../assets/images/unicorns.jpg')}></Image>
+        </Box>
+        <Box bg="#7B287D">
+          <h1>
+            New Plushies
+          </h1>
+        </Box>
+      </VStack>
+    </Flex>
   )
 }
 

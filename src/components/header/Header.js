@@ -42,8 +42,8 @@ const Header = () => {
 
   // To-do: When acct is logged in, Show one box w/ name and avatar, one box w/ orders?
   return (
-    <Box as="header" w="100%" role="contentinfo" sx={{ position: 'sticky', top: '0', zIndex: '1' }}>
-      <HStack className="topHeader" p={2} spacing="24px" color="white" bgGradient="linear(to-l, #7928CA,#FF0080)">
+    <Box w="100%" sx={{ position: 'sticky', top: '0', zIndex: '1' }}>
+      <HStack className="topHeader" p={2} spacing="24px" color="white" bgColor="#7E1F69">
         <Box>
         <Link to={user ? '/' : '/'} className="left logo"></Link>
           <Link to='/account' className="left">
@@ -67,7 +67,7 @@ const Header = () => {
         </HStack>
       </HStack>
 
-      <HStack className="topHeader" p={2} spacing="24px" bgGradient="linear(to-l, #FFFF00,#00FFFF)">
+      <HStack className="topHeader" p={2} spacing="24px" color="" bgColor="#FAF1F0">
         <Box>
           <Link to={{ pathname: "/search", search: "?condition=new"}} onClick={() => { onSubmit('new', null) }}>New</Link>
         </Box>
