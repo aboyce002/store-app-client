@@ -1,26 +1,16 @@
-import { Box, Flex, HStack, Stack, VStack, Spacer, StackDivider, Text } from '@chakra-ui/react'
+import { Box, HStack, VStack, StackDivider, Text } from '@chakra-ui/react'
 
 const Footer = () => {
   return (
-  <Box as="footer" alignItems='center' role="contentinfo" w="100%" p={2} color="white" bgColor="#7E1F69">      
+  <Box align="center" p={2} bgColor="#3B0839" textStyle="footer">      
     <VStack spacing={0}>
-      <Box className="left">
-        <Text fontSize="12px">@Aaaaaaaaaaaa, 2021. All rights reserved.</Text>
-      </Box>
-
-      <HStack>
-        <Box className="right">
-          <Text fontSize="12px">Terms of Service </Text>
-        </Box>
-        <Box className="right">
-          <Text fontSize="12px">| Privacy Policy</Text>
-        </Box>
-        <Box className="right">
-          <Text fontSize="12px">| About Us</Text>
-        </Box>
-        <Box className="right">
-          <Text fontSize="12px">| Contact us</Text>
-        </Box>
+        <Text>@Kass Crafts, 2023. All rights reserved.</Text>
+        <Text>All images are for show only and belong to their respective owners.</Text>
+      <HStack divider={<StackDivider />}>
+        <Text>Terms of Service </Text>
+        <Text>Privacy Policy</Text>
+        <Text>About Us</Text>
+        <Text>Contact Us</Text>
       </HStack>
     </VStack>
   </Box>

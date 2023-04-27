@@ -1,91 +1,154 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
-import PayStripe from '../PayStripe';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { Link as ReactLink } from 'react-router-dom';
+import { TailSpin } from 'react-loading-icons';
 import SearchBar from '../searchbar/SearchBar';
-import { Box, Flex, HStack, Spacer } from '@chakra-ui/react'
-import { FiShoppingCart } from 'react-icons/fi';
-import { fetchProducts, getProducts } from '../../utils/products/productsSlice';
-import { getUser, getCredits } from '../../utils/user/userSlice';
+import { Box, Button, IconButton, Image, ImageLink, Link, HStack, Spacer, useBreakpointValue } from '@chakra-ui/react';
+import { Menu, MenuButton, MenuList, MenuItem, MenuGroup, MenuDivider } from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure } from '@chakra-ui/react';
+import { FiShoppingCart, FiUser } from 'react-icons/fi';
+import { RxHamburgerMenu } from 'react-icons/rx';
+import { FiSearch } from 'react-icons/fi';
+import { getUser } from '../../utils/user/userSlice';
 
 const Header = () => {
   // const { productList, fetchProductsByParams } = useContext(GlobalContext);
-  const productList = useSelector(getProducts);
+  const isDesktopSize = useBreakpointValue({ base: false, lg: true }); 
+  console.log("desktop?: ", isDesktopSize);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const user = useSelector(getUser);
-  const credits = useSelector(getCredits);
-  const dispatch = useDispatch();
 
-  // Get info for specific product page
-  const onSubmit = async (condition, category) => {
-    // fetchProductsByParams(condition, category);
-    dispatch(fetchProducts());
-    console.log("Products: " + productList);
-    console.log("User?: " + user);
-  }
-
-  const renderContent = () => {
-    <Spacer/>
+  const renderAccountMenu = () => {
     switch (user){ 
       case null:
-        return <Box>Loading...</Box>;
+        return <TailSpin/>;
       case false:
-        return <Box><a href="/login">Log In</a></Box>;
+        return <Box><ReactLink to="/login">Log In</ReactLink> <ReactLink to="/register">Register</ReactLink></Box>;
       default:
-        return [
-            <Box key="1"><PayStripe/></Box>,
-            <Box key="3" style={{ margin: '0 10px'}}>
-              Credits: { credits }
-            </Box>,
-            <Box key="2"><a href="/api/logout">Logout</a></Box>
-        ];
+        // Hamburger menu for mobile
+        return (
+          <Menu>
+            {isDesktopSize &&
+              <MenuButton>
+                Account
+              </MenuButton>
+            }
+            {!isDesktopSize &&
+              <MenuButton as={IconButton} aria-label='Account' icon={<FiUser />} />
+            }
+            <MenuList zIndex='2'>
+              <MenuGroup title='Account'>
+                <MenuItem as={ReactLink} to='/account'>Settings</MenuItem>
+              </MenuGroup>
+              <MenuDivider />
+              <a href='/api/logout'>
+                <MenuItem>Logout</MenuItem>
+              </a>
+            </MenuList>
+          </Menu>
+        )
     }
   }
 
-  // To-do: When acct is logged in, Show one box w/ name and avatar, one box w/ orders?
-  return (
-    <Box w="100%" sx={{ position: 'sticky', top: '0', zIndex: '1' }}>
-      <HStack className="topHeader" p={2} spacing="24px" color="white" bgColor="#7E1F69">
-        <Box>
-        <Link to={user ? '/' : '/'} className="left logo"></Link>
-          <Link to='/account' className="left">
-            My Account
-          </Link>
+  const mobileCategoryMenu = () => {
+    return <Menu>
+      <MenuButton as={IconButton} aria-label='Account' icon={<RxHamburgerMenu />} />
+      <MenuList>
+        <MenuGroup title='Categories'>
+          <MenuItem color='#EAEAEA' as={ReactLink} to={{ pathname: "/search", search: "?condition=new"}}>New</MenuItem>
+          <MenuItem as={ReactLink} to={{ pathname: "/search", search: "?category=plushies"}}>Plushies</MenuItem>
+          <MenuItem as={ReactLink} to={{ pathname: "/search", search: "?category=charms"}}>Charms</MenuItem>
+          <MenuItem as={ReactLink} to={{ pathname: "/search", search: "?category=prints"}}>Prints</MenuItem>
+          <MenuItem as={ReactLink} to={{ pathname: "/search", search: "?category=stickers"}}>Stickers</MenuItem>
+        </MenuGroup>
+      </MenuList>
+    </Menu>
+  }
+
+  const mobileSearchBar = () => {
+    return <>
+      <IconButton onClick={onOpen} icon={<FiSearch/>} />
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Search</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <SearchBar />
+        </ModalBody>
+
+        <ModalFooter>
+          <Button mr={3} onClick={onClose}>X</Button>
+          <Button variant='outline'>New</Button>
+          <Button variant='outline'>Plushies</Button>
+          <Button variant='outline'>Charms</Button>
+          <Button variant='outline'>Prints</Button>
+          <Button variant='outline'>Stickers</Button>
+        </ModalFooter>
+      </ModalContent>
+      </Modal>
+    </>
+  }
+
+  const cartButton = () => {
+    return <Link as={ReactLink} to='/cart'>
+      <IconButton aria-label='Cart' icon={<FiShoppingCart/>}/>
+    </Link>
+  }
+
+  // To-do: When acct is logged in, Show one box w/ name, one box w/ orders?\
+  if (isDesktopSize) return (
+    <HStack spacing="35px" py={1} px={20}
+      bgGradient='linear(to-r, #7E1F69, #3B0839)' 
+      sx={{ position: 'sticky', top: '0', zIndex: '2' }}
+      textStyle="header">
+      <Box w={[0, 100, 160]}>
+        <ReactLink to='/'>
+          <Image objectFit="cover" src={require('../../assets/images/logo.png')} alt='Logo'></Image>
+        </ReactLink>
+      </Box>
+      <Spacer/>
+      <HStack spacing="25px" textStyle="headingLinks">
+        <Link as={ReactLink} to={{ pathname: "/search", search: "?condition=new"}} _activeLink={{ color: 'white' }}>New</Link>
+        <Link as={ReactLink} to={{ pathname: "/search", search: "?category=plushies"}} _activeLink={{ color: 'white' }}>Plushies</Link>
+        <Link as={ReactLink} to={{ pathname: "/search", search: "?category=charms"}} _activeLink={{ color: 'white' }}>Charms</Link>
+        <Link as={ReactLink} to={{ pathname: "/search", search: "?category=prints"}} _activeLink={{ color: 'white' }}>Prints</Link>
+        <Link as={ReactLink} to={{ pathname: "/search", search: "?category=stickers"}} _activeLink={{ color: 'white' }}>Stickers</Link>
+      </HStack>
+      <Spacer/>
+      <Box w={[200, 450, 700]}>
+        <SearchBar />
+      </Box>
+        {cartButton()}
+        {renderAccountMenu()}
+    </HStack>
+  )
+  // All header text is condensed into icons for mobile
+  else return (
+    <>
+      <HStack px={4}
+        bgGradient='linear(to-r, #7E1F69, #3B0839)' 
+        sx={{ position: 'sticky', top: '0', zIndex: '2' }}
+        textStyle="header">
+        <Box w={150}>
+          <ReactLink to='/'>
+            <Image objectFit="cover" src={require('../../assets/images/logo.png')} alt='Logo'></Image>
+          </ReactLink>
         </Box>
-        <Box>
-          <Link to='/' className="left logo">
-            Home
-          </Link>
-        </Box>
-          <SearchBar/>
         <Spacer/>
-        <Box>
-          <Link to='/cart'>
-            <FiShoppingCart/>
-          </Link>
-        </Box>
-        <HStack>
-          {renderContent()}
+        <HStack spacing={3}>
+          {mobileSearchBar()}
+          {cartButton()}
+          {mobileCategoryMenu()}
+          {renderAccountMenu()}
         </HStack>
       </HStack>
-
-      <HStack className="topHeader" p={2} spacing="24px" color="" bgColor="#FAF1F0">
-        <Box>
-          <Link to={{ pathname: "/search", search: "?condition=new"}} onClick={() => { onSubmit('new', null) }}>New</Link>
-        </Box>
-        <Box>
-          <Link to={{ pathname: "/search", search: "?category=plushies"}} onClick={() => { onSubmit(null, 'plushies') }}>Plushies</Link>
-        </Box>
-        <Box>
-          <Link to={{ pathname: "/search", search: "?category=charms"}} onClick={() => { onSubmit(null, 'charms') }}>Charms</Link>
-        </Box>
-        <Box>
-          <Link to={{ pathname: "/search", search: "?category=prints"}} onClick={() => { onSubmit(null, 'prints') }}>Prints</Link>
-        </Box>
-        <Box>
-          <Link to={{ pathname: "/search", search: "?category=stickers"}} onClick={() => { onSubmit(null, 'stickers') }}>Stickers</Link>
-        </Box>
+      <HStack>
+        
       </HStack>
-    </Box>
-  );
+    </>
+  )
 }
 
 export default Header;

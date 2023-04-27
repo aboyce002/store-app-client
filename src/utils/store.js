@@ -26,7 +26,8 @@ export const store = configureStore({
     user: userReducer,
     product: productReducer,
     stripe: stripeReducer,
-    cart: persistedReducer
+    cart: persistedReducer,
+    devTools: true
   },
   middleware: (getDefaultMiddleware) =>
   getDefaultMiddleware({

@@ -1,11 +1,31 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import serverApi from '../../api/serverApi';
 
-export const fetchUser = createAsyncThunk('users/fetchUser', async () => {
+export const fetchUser = createAsyncThunk('user/fetchUser', async () => {
   const res = await serverApi.get('/current_user');
-  console.log("User data is " + res.data);
   return res.data || false;
 });
+
+export const logout = createAsyncThunk('user/logout', async () => {
+  const res = await serverApi.post('/logout');
+  return res.data || false;
+});
+
+export const loginUser = createAsyncThunk('user/login', async () => {
+  const res = await serverApi.get('/user/login');
+  return res.data || false;
+});
+
+export const registerUser = createAsyncThunk('user/register', async () => {
+  const res = await serverApi.get('/user/register');
+  return res.data || false;
+});
+
+export const updateUser = createAsyncThunk('user/update', async (id) => {
+  const res = await serverApi.get(`/user/update/${id}`);
+  return res.data || false;
+});
+
 
 const userSlice = createSlice({
   name: 'user',
@@ -20,7 +40,6 @@ const userSlice = createSlice({
       .addCase(fetchUser.fulfilled, (state, action) => {
         state.status = 'idle'
         state.userInfo = action.payload;
-        console.log("userinfo: " + state.userInfo);
       })
       .addCase(fetchUser.rejected, (state, action) => {
         state.isFetching = false

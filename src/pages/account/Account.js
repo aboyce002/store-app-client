@@ -1,10 +1,26 @@
+import { useSelector, useDispatch } from 'react-redux';
+import { Box, Flex, HStack, Spacer, Heading, Divider, VStack } from '@chakra-ui/react'
+import { getUser, getCredits } from '../../utils/user/userSlice';
+
 const Account = () => {
+  const credits = useSelector(getCredits);
+
   return (
-    <div style={{ textAlign: 'center' }}>
-      <h1>
-        Display account info here
-      </h1>
-    </div>
+    <VStack>
+      <Heading>
+        Account Info
+      </Heading>
+      <Heading>
+        Edit Addresses
+      </Heading>
+      <Heading>
+        Change Password
+      </Heading>
+      <Divider />
+      <Heading>
+        Orders
+      </Heading>
+    </VStack>
   )
 }
 

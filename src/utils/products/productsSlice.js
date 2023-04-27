@@ -1,21 +1,22 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { useSearchParams } from "react-router-dom";
 import serverApi from '../../api/serverApi';
 
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
-  const res = await serverApi.get('/products', {
-    //use searchValue here
-    //params: { searchParams }
-  });
-  console.log(res);
-  return res.data || false;
+  try {
+    const res = await serverApi.get('/products');
+    return res.data || false;
+  } catch(error) {
+    return console.error(error.message);
+  }
 });
-export const fetchProduct = createAsyncThunk('products/fetchProduct', async () => {
-  const res = await serverApi.get('/product/:id', {
-    //use searchValue here
-    //params: { searchParams }
-  });
+
+export const fetchProduct = createAsyncThunk('products/fetchProduct', async (id) => {
+  try {
+    const res = await serverApi.get(`/product/${id}`);
   return res.data || false;
+  } catch(error) {
+    return console.error(error.message);
+  }
 });
 
 const productSlice = createSlice({
@@ -24,25 +25,25 @@ const productSlice = createSlice({
   reducers: { },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchProducts.pending, (state, action) => {
-        state.status = 'loading'
-      })
       .addCase(fetchProducts.fulfilled, (state, action) => {
-        state.status = 'idle'
+        state.status = 'fulfilled'
         state.productList = action.payload || null;
       })
-      .addCase(fetchProducts.rejected, (state, action) => {
-        state.isFetching = false
+      .addCase(fetchProducts.pending, (state, action) => {
+        state.status = 'pending'
       })
-      .addCase(fetchProduct.pending, (state, action) => {
-        state.status = 'loading'
+      .addCase(fetchProducts.rejected, (state, action) => {
+        state.error = action.payload;
       })
       .addCase(fetchProduct.fulfilled, (state, action) => {
-        state.status = 'idle'
+        state.status = 'fulfilled'
         state.selectedProduct = action.payload || null;
       })
+      .addCase(fetchProduct.pending, (state, action) => {
+        state.status = 'pending'
+      })
       .addCase(fetchProduct.rejected, (state, action) => {
-        state.isFetching = false
+        state.error = action.payload;
       })
   }
 });
@@ -51,6 +52,21 @@ export const getProducts = state => state.product.productList;
 export const getProduct = state => state.product.selectedProduct;
 export const getProductById = (state, productId) =>
   state.product.productList.find(product => product.id === productId);
-export const filterProductsByCategory = (state, productCategory) =>
-  state.product.productList.filter(product => product.category === productCategory);
+export const getStatus = state => state.product.status;
+export const filterProductsBySearchParams = (state, params, paramValues) => {
+  let filteredList = state.product.productList;
+  for (let i = 0; i < params.length; i++) {
+    if(paramValues[i] != null)
+    {
+      if (params[i].toLowerCase() === 'title')
+        filteredList = filteredList.filter(product => String(product).toLowerCase().includes(String(paramValues[i]).toLowerCase()));
+      else
+        filteredList = filteredList.filter(product => product[params[i]] === paramValues[i]);
+    }
+    console.log("Filtered list: " + filteredList);
+  }
+  return filteredList;
+}
+/*export const filterProductByCategory = (state, param, paramValue) =>
+    state.product.productList.filter(product => product[param] === paramValue);*/
 export default productSlice.reducer;

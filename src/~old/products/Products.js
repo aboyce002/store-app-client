@@ -9,7 +9,7 @@ const Products = () => {
     const response = await ProductDataService.getAll();
 
     setData(response.data);
-  });*/
+  }, []);*/
   
   return (
     <>
