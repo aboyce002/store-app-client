@@ -4,7 +4,8 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { TailSpin } from 'react-loading-icons'
 import { Box, HStack, VStack, Image, Flex, Button, Heading, Text } from '@chakra-ui/react'
 import { addToCart } from '../../utils/cart/cartSlice';
-import { fetchProduct, getProduct, getStatus} from '../../utils/products/productsSlice';
+import { fetchProduct, getProduct, getStatus } from '../../utils/products/productsSlice';
+import RenderFromData from '../../components/renderfromdata/RenderFromData';
 
 const Product = () => {
   // Gets data of one product to display on the product page
@@ -12,7 +13,7 @@ const Product = () => {
   let status = useSelector(getStatus);
   const [searchParams] = useSearchParams();
   let product = useSelector(getProduct);
-  
+
   useEffect(() => {
     dispatch(fetchProduct(searchParams.get('id')));
   }, []);
@@ -37,7 +38,7 @@ const Product = () => {
   }
 
   const renderProduct = () => {
-    switch (product){ 
+    switch (product) {
       case null:
         return <Box>Error: Product not found.</Box>;
       case false:
@@ -48,10 +49,10 @@ const Product = () => {
             <HStack spacing="24px">
               <VStack>
                 <Box display="flex" key={product.id}>
-                  <Image alt={product.title} src={product.image} maxW={{base: "300px", lg: "600px"}} maxH={{base: "300px", lg: "600px"}} objectFit='scale-down'/>
+                  <Image alt={product.title} src={product.image} maxW={{ base: "300px", lg: "600px" }} maxH={{ base: "300px", lg: "600px" }} objectFit='scale-down' />
                 </Box>
                 <HStack>
-                  <Image alt={product.title} src={product.image} boxSize='60px' objectFit='cover'/>
+                  <Image alt={product.title} src={product.image} boxSize='60px' objectFit='cover' />
                 </HStack>
               </VStack>
               <VStack>
@@ -69,10 +70,17 @@ const Product = () => {
   }
 
   // Change purchase button based on availability
-  if (status === 'pending') 
-    return <TailSpin stroke="#3B0839"/>;
+  if (status === 'pending')
+    return <TailSpin stroke="#3B0839" />;
   else return (
     renderProduct()
+    /*
+    <RenderFromData
+      data={product}
+      ifNull={<Box>Error: Product not found.</Box>}
+      ifFalse={<Box>Error: Cannot fetch product.</Box>}
+      ifExists={renderProduct()} />
+    */
   )
 }
 

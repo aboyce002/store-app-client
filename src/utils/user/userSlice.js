@@ -11,14 +11,22 @@ export const logout = createAsyncThunk('user/logout', async () => {
   return res.data || false;
 });
 
-export const loginUser = createAsyncThunk('user/login', async () => {
-  const res = await serverApi.get('/user/login');
-  return res.data || false;
+export const loginUser = createAsyncThunk('user/login', async (email, password) => {
+  try {
+    const res = await serverApi.get('/user/login', email, password);
+    return res.data || false;
+  } catch (error) {
+    return console.error(error.message);
+  }
 });
 
-export const registerUser = createAsyncThunk('user/register', async () => {
-  const res = await serverApi.get('/user/register');
-  return res.data || false;
+export const registerUser = createAsyncThunk('user/register', async (email, password) => {
+  try {
+    const res = await serverApi.post('/user/register', email, password);
+    return res.data;
+  } catch (error) {
+    return console.error(error.message);
+  }
 });
 
 export const updateUser = createAsyncThunk('user/update', async (id) => {

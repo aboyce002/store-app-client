@@ -59,14 +59,12 @@ export const filterProductsBySearchParams = (state, params, paramValues) => {
     if(paramValues[i] != null)
     {
       if (params[i].toLowerCase() === 'title')
-        filteredList = filteredList.filter(product => String(product).toLowerCase().includes(String(paramValues[i]).toLowerCase()));
+      {
+        filteredList = filteredList.filter(product => (String(product.title).toLowerCase().includes(String(paramValues[i]).toLowerCase())))}
       else
         filteredList = filteredList.filter(product => product[params[i]] === paramValues[i]);
     }
-    console.log("Filtered list: " + filteredList);
   }
   return filteredList;
 }
-/*export const filterProductByCategory = (state, param, paramValue) =>
-    state.product.productList.filter(product => product[param] === paramValue);*/
 export default productSlice.reducer;

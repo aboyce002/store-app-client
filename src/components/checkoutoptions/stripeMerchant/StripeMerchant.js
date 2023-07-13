@@ -1,16 +1,11 @@
 import { useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
 import { TailSpin } from 'react-loading-icons'
-import { Divider, Heading, Text, Box, Button, Stack, HStack, VStack, Flex, Spacer, Input, NumberInput, NumberInputField, StackDivider } from '@chakra-ui/react'
-import {
-  PaymentElement,
-  LinkAuthenticationElement,
-  useStripe,
-  useElements
-} from "@stripe/react-stripe-js";
-import { getSecret } from "../../utils/stripe/stripeSlice";
+import { Button, Text } from '@chakra-ui/react'
+import { PaymentElement, LinkAuthenticationElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { getSecret } from "../../../utils/stripe/stripeSlice";
 
-const StripeCheckout = () => {
+const StripeMerchant = () => {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -101,4 +96,4 @@ const StripeCheckout = () => {
   );
 }
 
-export default StripeCheckout;
+export default StripeMerchant;

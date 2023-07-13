@@ -12,7 +12,7 @@ const SearchBar = () => {
   const [categoryValue, setCategoryValue] = useState([]);
 
   const onSubmit = async () => {
-    navigate(`/search?title=${searchValue}&category=${categoryValue}`);
+    navigate((categoryValue === undefined || categoryValue.length == 0) ? `/search?title=${searchValue}` : `/search?title=${searchValue}&category=${categoryValue}`);
   }
 
   const select = () => {

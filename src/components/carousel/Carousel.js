@@ -39,7 +39,7 @@ const Carousel = () => {
     <Box
       position={'relative'}
       height={[150, 250, 350, 500]}
-      width={[250, 300, 400, 'full']}
+      w="100%"
       overflow={'hidden'}>
       {/* CSS files for react-slick */}
       <link
