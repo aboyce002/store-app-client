@@ -32,9 +32,6 @@ const Homepage = () => {
   return (
     <Container my={-4} px={-[2, 10]} minW='100%' w='100%'>
       <Flex>
-        <Box position='absolute' zIndex='1' bgImage='url(http://placekitten.com/610/600)' bgGradient='linear(to-r, rgba(167,207,223,0) 0%, rgba(35,83,138,0.95) 100%)'>
-          <Text>AAAAAAA</Text>
-        </Box>
         <Carousel position='relative' />
       </Flex>
       <VStack alignItems="start" p={4} bgColor="mainPurple.150">

@@ -1,4 +1,3 @@
-
 import { Link as ReactLink } from 'react-router-dom';
 import { FiShoppingCart } from 'react-icons/fi';
 import { IconButton, Link } from '@chakra-ui/react';

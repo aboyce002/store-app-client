@@ -1,7 +1,8 @@
-import { useState, useRef } from 'react';
-import { Box, IconButton, useBreakpointValue } from '@chakra-ui/react';
+import { useState, useRef, Fragment } from 'react';
+import { Box, IconButton, Text, useBreakpointValue } from '@chakra-ui/react';
 // Here we have used react-icons package for the icons
 import { BiLeftArrowAlt, BiRightArrowAlt } from 'react-icons/bi';
+import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 // And react-slick as our Carousel Lib
 import Slider from 'react-slick';
 
@@ -26,14 +27,28 @@ const Carousel = () => {
 
   // These are the breakpoints which changes the position of the
   // buttons as the screen size changes
-  const top = useBreakpointValue({ base: '90%', md: '50%' });
-  const side = useBreakpointValue({ base: '30%', md: '10px' });
+  const top = useBreakpointValue({ base: '50%', md: '50%' });
+  const side = useBreakpointValue({ base: '0px', md: '0px' });
+  const arrowSize = useBreakpointValue({ base: '30px', md: '50px' });
 
   // These are the images used in the slide
   const cards = [
-    require('../../assets/images/carbies.png'),
-    require('../../assets/images/unicorns.jpg'),
+    require('../../assets/images/carousel-stand.jpg'),
+    require('../../assets/images/carousel-plush.png'),
+    require('../../assets/images/carousel-dinos.png'),
+    require('../../assets/images/carousel-charms.png'),
   ];
+
+  const cardText = [
+    "aaaaaaaaaaaa",
+    "bbbbbbbbbbbbbbbbbbbbb",
+    "ccccccccccccccccccccccccccccccc",
+    "ddddddddddddddddddddddddddddddddddddddddddddddd",
+  ];
+
+  const getCardText = (index) => {
+    return cardText[index];
+  }
 
   return (
     <Box
@@ -56,43 +71,54 @@ const Carousel = () => {
       {/* Left Icon */}
       <IconButton
         aria-label="left-arrow"
-        fontSize='30px'
+        fontSize={arrowSize}
+        height="100%"
         color="white"
         variant="ghost"
+        borderRadius="0px"
+        _hover={{ bg: 'rgba(33, 33, 33, 0.3)' }}
         position="absolute"
         left={side}
         top={top}
         transform={'translate(0%, -50%)'}
-        zIndex={2}
+        zIndex={1}
         onClick={() => slider?.slickPrev()}>
-        <BiLeftArrowAlt />
+        <AiOutlineLeft border="6px solid red"/>
       </IconButton>
       {/* Right Icon */}
       <IconButton
         aria-label="right-arrow"
-        fontSize='30px'
+        fontSize={arrowSize}
+        height="100%"
         color="white"
         variant="ghost"
+        borderRadius="0px"
+        _hover={{ bg: 'rgba(33, 33, 33, 0.3)' }}
         position="absolute"
         right={side}
         top={top}
         transform={'translate(0%, -50%)'}
-        zIndex={2}
+        zIndex={1}
         onClick={() => slider?.slickNext()}>
-        <BiRightArrowAlt />
+        <AiOutlineRight />
       </IconButton>
       {/* Slider */}
       <Slider {...settings} ref={(slider) => setSlider(slider)}>
         {cards.map((url, index) => (
-          <Box
-            key={index}
-            height={'lg'}
-            position="relative"
-            backgroundPosition="center"
-            backgroundRepeat="no-repeat"
-            backgroundSize="cover"
-            backgroundImage={`url(${url})`}
-          />
+          <Fragment key={index}>
+            <Box
+              key={index}
+              height={'lg'}
+              position="relative"
+              backgroundPosition="center"
+              backgroundRepeat="no-repeat"
+              backgroundSize="cover"
+              backgroundImage={`url(${url})`}>
+              <Box w="100%">
+                <Text>{getCardText(index)}</Text>
+              </Box>
+            </Box>
+          </Fragment>
         ))}
       </Slider>
     </Box>

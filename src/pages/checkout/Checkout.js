@@ -13,13 +13,14 @@ import AddressForm from '../../components/addressform/AddressForm';
 import OrderSummary from './OrderSummary';
 import PaypalMerchant from '../../components/checkoutoptions/paypalMerchant/PaypalMerchant';
 import RenderFromData from '../../components/renderfromdata/RenderFromData';
+import useDesktopSize from '../../hooks/useDesktopSize';
 
 const Checkout = () => {
   const { field, handleSubmit, formState: { errors, isSubmitting } } = useForm();
   const dispatch = useDispatch();
   let status = useSelector(getStatus);
   const cart = useSelector(getCart);
-  const isDesktopSize = useBreakpointValue({ base: false, lg: true });
+  const isDesktopSize = useDesktopSize();
   const totalPrice = useSelector(getTotalPrice);
   const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
   const secret = useSelector(getSecret);

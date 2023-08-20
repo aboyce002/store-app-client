@@ -3,8 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Flex } from '@chakra-ui/react'
 import { useDispatch } from 'react-redux';
 import { fetchUser } from '../utils/user/userSlice';
-import Account from '../pages/account/Account';
-import Breadcrumbs from './breadcrumbs/Breadcrumbs';
+import Account from '../pages/accountsettings/Account';
 import Cart from '../pages/cart/Cart';
 import Checkout from '../pages/checkout/Checkout';
 import Footer from './footer/Footer';

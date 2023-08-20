@@ -1,20 +1,32 @@
+import { createContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link as ReactLink } from 'react-router-dom';
-import { TailSpin } from 'react-loading-icons';
 import { FiUser } from 'react-icons/fi';
-import { Box, Button, IconButton, Image, Link, HStack, Spacer, useBreakpointValue } from '@chakra-ui/react';
+import { Box, Button, IconButton, Image, Link, HStack, Spacer } from '@chakra-ui/react';
 import { Menu, MenuButton, MenuList, MenuItem, MenuGroup, MenuDivider } from '@chakra-ui/react';
 import RenderFromData from '../../components/renderfromdata/RenderFromData';
 import SearchBar from '../searchbar/SearchBar';
 import CartButton from '../buttons/cardbutton/CartButton';
-import MobileCategoryMenu from '../mobile/MobileCategoryMenu';
-import MobileSearchBar from '../mobile/MobileSearchBar';
+import MobileCategoryMenu from '../mobile/categorymenu/MobileCategoryMenu';
+import SearchBarModal from '../mobile/searchbarmodal/SearchBarModal';
 import Breadcrumbs from '../breadcrumbs/Breadcrumbs';
 import { getUser } from '../../utils/user/userSlice';
+import useDesktopSize from '../../hooks/useDesktopSize';
+
+export const CurrentCategoryContext = createContext({
+  categoryValue: '',
+  setCategoryValue: () => { },
+});
 
 const Header = () => {
   // const { productList, fetchProductsByParams } = useContext(GlobalContext);
-  const isDesktopSize = useBreakpointValue({ base: false, lg: true });
+  // Context for passing the currently selected category value to the different search and select components
+  const [categoryValue, setCategoryValue] = useState("");
+  const value = useMemo(
+    () => ({ categoryValue, setCategoryValue }),
+    [categoryValue]
+  );
+  const isDesktopSize = useDesktopSize();
   const user = useSelector(getUser);
 
   const dataRender = () => {
@@ -35,7 +47,7 @@ const Header = () => {
   const renderAccountMenu = () => {
     // Hamburger menu for mobile
     return (
-      <Box>
+      <Box zIndex='2'>
         <Menu>
           {isDesktopSize &&
             <MenuButton>
@@ -59,60 +71,70 @@ const Header = () => {
     )
   }
 
-  // To-do: When acct is logged in, Show one box w/ name, one box w/ orders?\
-  if (isDesktopSize) return (
-    <Box sx={{ position: 'sticky', top: '0', zIndex: '2' }}>
-      <HStack spacing={30} py={1} px={5}
-        bgGradient='linear(to-r, #7E1F69, #3B0839)'
-        textStyle="header">
-        <Box minW={[0, 100, 140]} maxW={[0, 100, 140]}>
-          <ReactLink to='/'>
-            <Image objectFit="cover" src={require('../../assets/images/logo.png')} alt='Logo'></Image>
-          </ReactLink>
-        </Box>
-        <Spacer />
-        <HStack spacing={8} textStyle="headingLinks">
-          <Link as={ReactLink} to={{ pathname: "/search", search: "?condition=new" }} _activeLink={{ color: 'white' }}>New</Link>
-          <Link as={ReactLink} to={{ pathname: "/search", search: "?category=plushies" }} _activeLink={{ color: 'white' }}>Plushies</Link>
-          <Link as={ReactLink} to={{ pathname: "/search", search: "?category=charms" }} _activeLink={{ color: 'white' }}>Charms</Link>
-          <Link as={ReactLink} to={{ pathname: "/search", search: "?category=prints" }} _activeLink={{ color: 'white' }}>Prints</Link>
-          <Link as={ReactLink} to={{ pathname: "/search", search: "?category=stickers" }} _activeLink={{ color: 'white' }}>Stickers</Link>
-        </HStack>
-        <Spacer />
-        <HStack>
-          <Box maxW={700} w={[200, 450, 700]}>
-            <SearchBar />
+  const renderDesktopOrMobile = () => {
+    if (isDesktopSize) return (
+      <Box sx={{ position: 'sticky', top: '0', zIndex: '2' }}>
+        <HStack spacing={30} py={1} px={5}
+          bgGradient='linear(to-r, #7E1F69, #3B0839)'
+          textStyle="header">
+          <Box minW={[0, 100, 140]} maxW={[0, 100, 140]}>
+            <ReactLink to='/'>
+              <Image objectFit="cover" src={require('../../assets/images/logo.png')} alt='Logo'></Image>
+            </ReactLink>
           </Box>
-          <CartButton />
+          <Spacer />
+          <HStack spacing={8} textStyle="headingLinks">
+            <Link as={ReactLink} to={{ pathname: "/search", search: "?condition=new" }} _activeLink={{ color: 'white' }}>New</Link>
+            <Link as={ReactLink} to={{ pathname: "/search", search: "?category=plushies" }} _activeLink={{ color: 'white' }}>Plushies</Link>
+            <Link as={ReactLink} to={{ pathname: "/search", search: "?category=charms" }} _activeLink={{ color: 'white' }}>Charms</Link>
+            <Link as={ReactLink} to={{ pathname: "/search", search: "?category=prints" }} _activeLink={{ color: 'white' }}>Prints</Link>
+            <Link as={ReactLink} to={{ pathname: "/search", search: "?category=stickers" }} _activeLink={{ color: 'white' }}>Stickers</Link>
+          </HStack>
+          <Spacer />
+          <HStack>
+            <Box maxW={700} w={[200, 450, 700]}>
+              <SearchBar />
+            </Box>
+            <CartButton />
+          </HStack>
+          <HStack spacing={10}>
+            {dataRender()}
+          </HStack>
         </HStack>
-        <HStack spacing={10}>
-          {dataRender()}
+        <Breadcrumbs />
+      </Box>
+    )
+    // All header text is condensed into icons for mobile
+    else return (
+      <Box sx={{ position: 'sticky', top: '0', zIndex: '2' }}>
+        <HStack px={4}
+          bgGradient='linear(to-r, #7E1F69, #3B0839)'
+          textStyle="header">
+          <Box w={150}>
+            <ReactLink to='/'>
+              <Image objectFit="cover" src={require('../../assets/images/logo.png')} alt='Logo'></Image>
+            </ReactLink>
+          </Box>
+          <Spacer />
+          <HStack spacing={3}>
+            <SearchBarModal />
+            <MobileCategoryMenu />
+            <CartButton />
+            {dataRender()}
+          </HStack>
         </HStack>
-      </HStack>
-      <Breadcrumbs />
-    </Box>
-  )
-  // All header text is condensed into icons for mobile
-  else return (
-    <Box sx={{ position: 'sticky', top: '0', zIndex: '2' }}>
-      <HStack px={4}
-        bgGradient='linear(to-r, #7E1F69, #3B0839)'
-        textStyle="header">
-        <Box w={150}>
-          <ReactLink to='/'>
-            <Image objectFit="cover" src={require('../../assets/images/logo.png')} alt='Logo'></Image>
-          </ReactLink>
-        </Box>
-        <Spacer />
-        <HStack spacing={3}>
-          <MobileSearchBar />
-          <MobileCategoryMenu />
-          <CartButton />
-          {dataRender()}
-        </HStack>
-      </HStack>
-      <Breadcrumbs />
-    </Box>
+        <Breadcrumbs />
+      </Box>
+    )
+  }
+
+  // To-do: When acct is logged in, Show one box w/ name, one box w/ orders?\
+  return (
+    <CurrentCategoryContext.Provider value={value}>
+      {useMemo(() => (
+        renderDesktopOrMobile()
+      ), [isDesktopSize])}
+    </CurrentCategoryContext.Provider>
   )
 }
 

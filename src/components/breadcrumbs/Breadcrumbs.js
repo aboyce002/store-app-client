@@ -21,7 +21,11 @@ const Breadcrumbs = () => {
 
   const getProductBreadcrumb = () => {
     if (category && path != null)
-      return (<BreadcrumbItem>{getBreadcrumbType()}</BreadcrumbItem>)
+      return (
+        <BreadcrumbItem>
+          <BreadcrumbLink as={Link} to={path} textTransform="capitalize">{category}</BreadcrumbLink>
+        </BreadcrumbItem>
+      )
   }
 
   const getTitleBreadcrumb = () => {
@@ -31,10 +35,6 @@ const Breadcrumbs = () => {
           <BreadcrumbLink as={Link} to={location.pathname + location.search}>{searchParams.get('title')}</BreadcrumbLink>
         </BreadcrumbItem>
       )
-  }
-
-  const getBreadcrumbType = () => {
-    return <BreadcrumbLink as={Link} to={path} textTransform="capitalize">{category}</BreadcrumbLink>
   }
 
   if (location.pathname === "/search" || location.search !== '') {
