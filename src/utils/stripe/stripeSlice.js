@@ -5,7 +5,7 @@ export const handleToken = createAsyncThunk('stripe/handleToken', async (token) 
   try {
     const res = await serverApi.post('/stripe', token);
     return res.data;
-  } catch(error) {
+  } catch (error) {
     return console.error(error.message);
   }
 });
@@ -14,21 +14,17 @@ export const getStripeSecret = createAsyncThunk('stripe/getStripeSecret', async 
   try {
     const res = await serverApi.post('/stripe/create-payment-intent', token, amount);
     return res.data;
-  } catch(error) {
+  } catch (error) {
     return console.error(error.message);
   }
 });
 
-export const createPaymentIntent = createAsyncThunk('stripe/createPaymentIntent', async (price) => {
-  // Must convert price to a non-decimal format for Stripe to accept it
-  const priceToInt = price / Math.pow(10, -2);
+export const createPaymentIntent = createAsyncThunk('stripe/createPaymentIntent', async (cartItems) => {
   try {
     // Returns secret, which Stripe requires to load components
-    const res = await serverApi.post('/stripe/create-payment-intent', {
-      price: priceToInt
-    });
+    const res = await serverApi.post('/stripe/create-payment-intent', { cartItems });
     return res.data.clientSecret;
-  } catch(error) {
+  } catch (error) {
     return console.error(error.message);
   }
 });
@@ -38,7 +34,7 @@ const stripeSlice = createSlice({
   initialState: { stripe: null, clientSecret: null },
   reducers: {
     handleToken(state, action) {
-        state.stripe = action.payload;
+      state.stripe = action.payload;
     }
   },
   extraReducers: builder => {

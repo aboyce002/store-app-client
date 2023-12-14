@@ -9,7 +9,7 @@ import SearchCategorySelect from './SearchCategorySelect';
 import useDesktopSize from '../../hooks/useDesktopSize';
 
 const SearchBar = ({ onClose }) => {
-  const categoryValue = useContext(CurrentCategoryContext);
+  const {categoryValue, setCategoryValue} = useContext(CurrentCategoryContext);
   const isDesktopSize = useDesktopSize();
   const navigate = useNavigate();
   const { field, handleSubmit, formState: { errors, isSubmitting } } = useForm();

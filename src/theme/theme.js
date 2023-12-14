@@ -31,7 +31,7 @@ const theme = extendTheme(
         300: "#E4DBDB", // light red - text
         400: "#D16F7F", // light pink - preorder text, heading text
         500: "#CE628D",
-        600: "#B74682",
+        600: "#B74682", // pinkish purple - links
         700: "#9C307C",
         800: "#7E1F69", // light purple - menu
         900: "#3B0839", // dark purple - header, footer
@@ -53,7 +53,6 @@ const theme = extendTheme(
         lineHeight: '1.4em',
       },
       headingLinks: {
-        color: 'mainPurple.300',
         fontFamily: 'var(--chakra-fonts-headingLinks)',
         fontSize: '22px',
         fontWeight: 'bold',
@@ -77,23 +76,30 @@ const theme = extendTheme(
     components: {
       Menu: menuTheme,
       Link: {
-        /*variants: {
-          primary: ({ colorScheme = "purple" }) => ({
-            color: `${colorScheme}.500`,
-            _hover: {
-              color: `${colorScheme}.400`,
-            },
-          }),
-        },
-        defaultProps: {
-          variant: "primary",
-        },*/
         baseStyle: {
+          color: 'mainPurple.300',
           transitionDuration: "200ms",
           _hover: {
             color: '#FFFFFF',
             textDecoration: 'none'
           },
+        },
+        variants: {
+          'text-link': {
+            color: 'mainPurple.600',
+            _hover: {
+              color: 'mainPurple.300',
+            },
+          },
+          'text-link-blue': {
+            color: 'mainBlue.900',
+            _hover: {
+              color: 'mainPurple.150',
+            },
+          }
+        },
+        defaultProps: {
+          variant: "primary",
         },
       },
       Button: {

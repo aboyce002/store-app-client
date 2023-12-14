@@ -3,13 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link as ReactLink } from 'react-router-dom';
 import { Link, Box, HStack, VStack, Image, Container, SimpleGrid, Heading, Text, Flex, Stack, Center, useBreakpoint, Spacer, Divider } from '@chakra-ui/react';
 import { BiRightArrowAlt } from 'react-icons/bi';
-import Carousel from '../../components/carousel/Carousel';
+import HomeCarousel from '../../components/carousels/homecarousel/HomeCarousel';
 import { filterProductsBySearchParams, fetchProducts, getStatus } from '../../utils/products/productsSlice';
 
 const Homepage = () => {
   const dispatch = useDispatch();
-  let productList = useSelector(state => filterProductsBySearchParams(state, ["condition"], ["new"]));
-  let status = useSelector(getStatus);
+  const productList = useSelector(state => filterProductsBySearchParams(state, ["condition"], ["new"]));
+  const status = useSelector(getStatus);
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -32,7 +32,7 @@ const Homepage = () => {
   return (
     <Container my={-4} px={-[2, 10]} minW='100%' w='100%'>
       <Flex>
-        <Carousel position='relative' />
+        <HomeCarousel position='relative' />
       </Flex>
       <VStack alignItems="start" p={4} bgColor="mainPurple.150">
         <HStack w='100%' alignItems="start">

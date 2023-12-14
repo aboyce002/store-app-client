@@ -1,14 +1,16 @@
 import { createContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link as ReactLink } from 'react-router-dom';
-import { FiUser } from 'react-icons/fi';
-import { Box, Button, IconButton, Image, Link, HStack, Spacer } from '@chakra-ui/react';
+import { Box, Button, IconButton, Image, Link, HStack, Spacer, Text } from '@chakra-ui/react';
 import { Menu, MenuButton, MenuList, MenuItem, MenuGroup, MenuDivider } from '@chakra-ui/react';
+import { FiUser } from 'react-icons/fi';
+import { RxHamburgerMenu } from 'react-icons/rx';
+import { IoCaretDownOutline } from "react-icons/io5";
+import CartButton from '../buttons/cartbutton/CartButton';
 import RenderFromData from '../../components/renderfromdata/RenderFromData';
 import SearchBar from '../searchbar/SearchBar';
-import CartButton from '../buttons/cardbutton/CartButton';
-import MobileCategoryMenu from '../mobile/categorymenu/MobileCategoryMenu';
-import SearchBarModal from '../mobile/searchbarmodal/SearchBarModal';
+import MobileCategoryMenu from '../mobile/MobileCategoryMenu';
+import SearchBarModal from '../modals/searchbarmodal/SearchBarModal';
 import Breadcrumbs from '../breadcrumbs/Breadcrumbs';
 import { getUser } from '../../utils/user/userSlice';
 import useDesktopSize from '../../hooks/useDesktopSize';
@@ -19,57 +21,13 @@ export const CurrentCategoryContext = createContext({
 });
 
 const Header = () => {
-  // const { productList, fetchProductsByParams } = useContext(GlobalContext);
-  // Context for passing the currently selected category value to the different search and select components
   const [categoryValue, setCategoryValue] = useState("");
-  const value = useMemo(
-    () => ({ categoryValue, setCategoryValue }),
-    [categoryValue]
-  );
+  const value = useMemo(() => ({
+    categoryValue,
+    setCategoryValue
+  }), [categoryValue]);
   const isDesktopSize = useDesktopSize();
   const user = useSelector(getUser);
-
-  const dataRender = () => {
-    return (
-      <RenderFromData
-        data={user}
-        ifFalse={
-          <HStack>
-            <Button><ReactLink to="/login">Log In</ReactLink>
-            </Button>
-            <Button colorScheme="mainPurple" bgColor="white" variant="outline"><ReactLink to="/register">Sign Up</ReactLink></Button>
-          </HStack>
-        }
-        ifExists={renderAccountMenu()} />
-    )
-  }
-
-  const renderAccountMenu = () => {
-    // Hamburger menu for mobile
-    return (
-      <Box zIndex='2'>
-        <Menu>
-          {isDesktopSize &&
-            <MenuButton>
-              Account
-            </MenuButton>
-          }
-          {!isDesktopSize &&
-            <MenuButton as={IconButton} aria-label='Account' icon={<FiUser />} />
-          }
-          <MenuList zIndex='2'>
-            <MenuGroup title='Account'>
-              <MenuItem as={ReactLink} to='/account'>Settings</MenuItem>
-            </MenuGroup>
-            <MenuDivider />
-            <a href='/api/logout'>
-              <MenuItem>Logout</MenuItem>
-            </a>
-          </MenuList>
-        </Menu>
-      </Box>
-    )
-  }
 
   const renderDesktopOrMobile = () => {
     if (isDesktopSize) return (
@@ -91,14 +49,12 @@ const Header = () => {
             <Link as={ReactLink} to={{ pathname: "/search", search: "?category=stickers" }} _activeLink={{ color: 'white' }}>Stickers</Link>
           </HStack>
           <Spacer />
-          <HStack>
+          <HStack spacing={10}>
             <Box maxW={700} w={[200, 450, 700]}>
               <SearchBar />
             </Box>
+            {loginRender()}
             <CartButton />
-          </HStack>
-          <HStack spacing={10}>
-            {dataRender()}
           </HStack>
         </HStack>
         <Breadcrumbs />
@@ -117,10 +73,10 @@ const Header = () => {
           </Box>
           <Spacer />
           <HStack spacing={3}>
-            <SearchBarModal />
             <MobileCategoryMenu />
+            <SearchBarModal />
+            {loginRender()}
             <CartButton />
-            {dataRender()}
           </HStack>
         </HStack>
         <Breadcrumbs />
@@ -128,12 +84,57 @@ const Header = () => {
     )
   }
 
-  // To-do: When acct is logged in, Show one box w/ name, one box w/ orders?\
+  const loginRender = () => {
+    return (
+      <RenderFromData
+        data={user}
+        ifFalse={
+          <HStack>
+            <Button><ReactLink to="/login">Log In</ReactLink>
+            </Button>
+            <Button colorScheme="mainPurple" bgColor="white" variant="outline"><ReactLink to="/register">Sign Up</ReactLink></Button>
+          </HStack>
+        }
+        ifExists={renderAccountMenu()} />
+    )
+  }
+
+  const renderAccountMenu = () => {
+    // Hamburger menu for mobile
+    return (
+      <Box zIndex='2'>
+        <Menu>
+          {isDesktopSize &&
+            <MenuButton textStyle="headingLinks" fontSize='lg' aria-label='Account'>
+              <HStack>
+                <Text>Account</Text>
+                <IoCaretDownOutline />
+              </HStack>
+            </MenuButton>
+          }
+          {!isDesktopSize &&
+            <MenuButton as={IconButton} icon={<RxHamburgerMenu />} aria-label='Account' />
+          }
+          <MenuList zIndex='2'>
+            <MenuGroup title='Account'>
+              <MenuItem as={ReactLink} to='/account'>Settings</MenuItem>
+            </MenuGroup>
+            <MenuDivider />
+            <a href='/api/users/logout'>
+              <MenuItem>Logout</MenuItem>
+            </a>
+          </MenuList>
+        </Menu>
+      </Box >
+    )
+  }
+
+  // To-do: When acct is logged in, Show one box w/ name, one box w/ orders?
   return (
     <CurrentCategoryContext.Provider value={value}>
       {useMemo(() => (
         renderDesktopOrMobile()
-      ), [isDesktopSize])}
+      ), [isDesktopSize, user])}
     </CurrentCategoryContext.Provider>
   )
 }

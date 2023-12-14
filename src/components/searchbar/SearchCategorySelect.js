@@ -3,7 +3,7 @@ import { Select } from '@chakra-ui/react'
 import { CurrentCategoryContext } from '../header/Header';
 
 const SearchCategorySelect = () => {
-  const [categoryValue, setCategoryValue] = useState("");
+  const { categoryValue, setCategoryValue } = useContext(CurrentCategoryContext);
 
   // w='400px'
   const options = [

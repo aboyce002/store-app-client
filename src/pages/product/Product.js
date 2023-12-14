@@ -1,22 +1,26 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useSearchParams, Link } from 'react-router-dom';
 import { TailSpin } from 'react-loading-icons'
-import { Box, HStack, VStack, Image, Flex, Button, Heading, Text } from '@chakra-ui/react'
+import { Box, HStack, VStack, Image, Flex, Button, Heading, Text, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, useDisclosure } from '@chakra-ui/react'
 import { addToCart } from '../../utils/cart/cartSlice';
 import { fetchProduct, getProduct, getStatus } from '../../utils/products/productsSlice';
 import RenderFromData from '../../components/renderfromdata/RenderFromData';
+import ProductCarousel from '../../components/carousels/productcarousel/ProductCarousel'
 
 const Product = () => {
   // Gets data of one product to display on the product page
   const dispatch = useDispatch();
-  let status = useSelector(getStatus);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [searchParams] = useSearchParams();
-  let product = useSelector(getProduct);
+  const status = useSelector(getStatus);
+  const product = useSelector(getProduct);
+  const [currentImage, setCurrentImage] = useState(product?.image);
 
   useEffect(() => {
     dispatch(fetchProduct(searchParams.get('id')));
-  }, []);
+    setCurrentImage(product?.image);
+  }, [product?.id]);
 
   const getAvailability = (product) => {
     if (product.availability !== "available")
@@ -31,40 +35,64 @@ const Product = () => {
       );
     else
       return (
-        <Link to="/cart" onClick={() => { dispatch(addToCart(product)) }}>
+        <Link to="/cart" onClick={() => dispatch(addToCart(product))}>
           <Button>Add to Cart</Button>
         </Link>
       );
   }
 
+  const getPreviewImages = (product) => {
+    return product.additional_images.map((image, index) => (
+      <Box key={index} as='button' border='1px' borderColor='mainPurple.200' boxShadow={currentImage === image ? "dark-lg" : null}>
+        <Image key={image} alt={product.title} src={image} boxSize='80px' objectFit='cover' onClick={() => setCurrentImage(image)} />
+      </Box>
+    ));
+  }
+
   const renderProduct = () => {
     switch (product) {
       case null:
-        return <Box>Error: Product not found.</Box>;
+        return <Box>Product not found.</Box>;
       case false:
-        return <Box>Error: Cannot fetch product.</Box>;
+        return <Box>Cannot retrieve product; please try again later.</Box>;
       default:
         return (
-          <Flex>
-            <HStack spacing="24px">
-              <VStack>
-                <Box display="flex" key={product.id}>
-                  <Image alt={product.title} src={product.image} maxW={{ base: "300px", lg: "600px" }} maxH={{ base: "300px", lg: "600px" }} objectFit='scale-down' />
-                </Box>
-                <HStack>
-                  <Image alt={product.title} src={product.image} boxSize='60px' objectFit='cover' />
-                </HStack>
-              </VStack>
-              <VStack>
-                <Box><Heading>{product.title}</Heading></Box>
-                <Box>${Number(product.price).toFixed(2)}</Box>
-                <Box>{product.description}</Box>
-                <Box>
-                  {getAvailability(product)}
-                </Box>
-              </VStack>
-            </HStack>
-          </Flex>
+          <>
+            <Flex>
+              <HStack spacing="24px">
+                <VStack>
+                  <Box key={product.id} as='button' display="flex">
+                    <Image key={product.id} alt={product.title} src={currentImage}
+                      maxW={{ base: "300px", lg: "500px" }}
+                      maxH={{ base: "300px", lg: "500px" }}
+                      objectFit='contain'
+                      onClick={onOpen} />
+                  </Box>
+                  <HStack spacing={3}>
+                    {getPreviewImages(product)}
+                  </HStack>
+                </VStack>
+                <VStack>
+                  <Box><Heading>{product.title}</Heading></Box>
+                  <Box>${Number(product.price).toFixed(2)}</Box>
+                  <Box>{product.description}</Box>
+                  <Box>
+                    {getAvailability(product)}
+                  </Box>
+                </VStack>
+              </HStack>
+            </Flex>
+            <Flex>
+              <Modal isOpen={isOpen} onClose={onClose} isCentered>
+                <ModalOverlay />
+                <ModalContent bgColor="transparent" boxShadow="none">
+                  <ModalBody>
+                    <ProductCarousel currentImage={currentImage} product={product} onClose={onClose} />
+                  </ModalBody>
+                </ModalContent>
+              </Modal>
+            </Flex>
+          </>
         );
     }
   }

@@ -8,8 +8,8 @@ const ProductList = ({getProductList}) => {
   // Make this be able to hold products returned from whatever search parameters
   const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
-  let productsWithParams = useSelector(state => filterProductsByCategory(state, searchParams.get('category')));
-  let productList = useSelector(getProducts);
+  const productsWithParams = useSelector(state => filterProductsByCategory(state, searchParams.get('category')));
+  const productList = useSelector(getProducts);
 
   if (searchParams.get('category')) productList = productsWithParams;
   useEffect(() => {

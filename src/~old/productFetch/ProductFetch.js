@@ -10,7 +10,7 @@ const ProductFetch = ({getProductFetch}) => {
     // Array of param objects in key:value pairs ie: [id, 1], [condition, new]
     const currentParams = Object.fromEntries([...searchParams]);
     // Make this be able to hold products returned from whatever search parameters
-    let productList = useSelector(state => {
+    const productList = useSelector(state => {
         if(searchParams.get('id'))
           return getProductById(state, parseInt(searchParams.get('id')))
         else if (searchParams)

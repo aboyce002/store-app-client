@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { TailSpin } from 'react-loading-icons'
 import { Button, Text } from '@chakra-ui/react'
-import { PaymentElement, LinkAuthenticationElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { getSecret } from "../../../utils/stripe/stripeSlice";
+import { PaymentElement, CardElement, Elements, LinkAuthenticationElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { createPaymentIntent, getSecret, getStatus } from '../../../utils/stripe/stripeSlice';
+import { getTotalPrice } from '../../../utils/cart/cartSlice';
 
 const StripeMerchant = () => {
+  const dispatch = useDispatch();
   const stripe = useStripe();
   const elements = useElements();
 
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const totalPrice = useSelector(getTotalPrice);
   const clientSecret = useSelector(getSecret);
 
   useEffect(() => {
@@ -78,12 +81,15 @@ const StripeMerchant = () => {
     layout: "tabs"
   }
 
+  /*
+    <LinkAuthenticationElement
+      id="link-authentication-element"
+      onChange={(e) => setEmail(e.value.email)}
+    />
+  */
+ 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
-      <LinkAuthenticationElement
-        id="link-authentication-element"
-        onChange={(e) => setEmail(e.target.value)}
-      />
       <PaymentElement id="payment-element" options={paymentElementOptions} />
       <Button disabled={isLoading || !stripe || !elements} id="submit">
         <Text id="button-text">

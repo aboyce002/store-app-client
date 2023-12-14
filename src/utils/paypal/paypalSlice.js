@@ -10,10 +10,10 @@ export const handleToken = createAsyncThunk('stripe/handleToken', async (token) 
   }
 });
 
-export const createOrder = createAsyncThunk('paypal/createOrder', async (price, data, actions) => {
+export const createOrder = createAsyncThunk('paypal/createOrder', async (cartItems, data, actions) => {
   try {
     const res = await serverApi.post('/paypal/create-paypal-order', {
-      price: price
+      cartItems: cartItems
     });
     console.log("order: ", res.data);
     return res.data.id;
@@ -61,12 +61,12 @@ const paypalSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
+      .addCase(createOrder.pending, (state, action) => {
+        state.status = 'pending'
+      })
       .addCase(createOrder.fulfilled, (state, action) => {
         state.status = 'fulfilled'
         state.orderID = action.payload || null;
-      })
-      .addCase(createOrder.pending, (state, action) => {
-        state.status = 'pending'
       })
       .addCase(createOrder.rejected, (state, action) => {
         state.error = action.payload;

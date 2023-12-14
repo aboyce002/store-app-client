@@ -1,11 +1,11 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { createOrder, onApprove } from "../../../utils/paypal/paypalSlice";
-import { getTotalPrice } from '../../../utils/cart/cartSlice';
+import { getCart } from '../../../utils/cart/cartSlice';
 
 const PaypalMerchant = () => {
   const dispatch = useDispatch();
-  const totalPrice = useSelector(getTotalPrice);
+  const cart = useSelector(getCart);
 
   return (
     <PayPalScriptProvider options={{ "client-id": process.env.REACT_APP_PAYPAL_CLIENT_ID }}>
@@ -15,7 +15,7 @@ const PaypalMerchant = () => {
           layout: 'vertical',
           shape: 'rect'
         }}
-        createOrder={(data, actions) => dispatch(createOrder(totalPrice, data, actions))
+        createOrder={(data, actions) => dispatch(createOrder(cart, data, actions))
           .unwrap()
           .then((orderID) => {
             return orderID;

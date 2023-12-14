@@ -6,7 +6,7 @@ const RenderFromData = ({ data, ifNull, ifFalse, ifEmpty, ifExists }) => {
       return ifNull || <TailSpin stroke="#3B0839"/>;
     case false:
       return ifFalse;
-    case data.length === 0:
+    case !data.length:
       return ifEmpty;
     default:
       return ifExists;

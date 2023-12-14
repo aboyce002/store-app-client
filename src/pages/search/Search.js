@@ -9,10 +9,10 @@ import RenderFromData from '../../components/renderfromdata/RenderFromData';
 
 const Search = () => {
   const dispatch = useDispatch();
-  let status = useSelector(getStatus);
+  const status = useSelector(getStatus);
   const [searchParams] = useSearchParams();
   const currentParams = Object.fromEntries([...searchParams]); // Array of param objects in key:value pairs ie: [id, 1] or [condition, new]
-  let productList = useSelector(state => {
+  const productList = useSelector(state => {
     if (searchParams)
       return filterProductsBySearchParams(state, Object.keys(currentParams), Object.values(currentParams));
     else return getProducts(state);
@@ -20,6 +20,7 @@ const Search = () => {
 
   useEffect(() => {
     dispatch(fetchProducts());
+    console.log("product list: ", productList);
   }, [searchParams]);
 
   const renderProductList = () => {
@@ -43,8 +44,8 @@ const Search = () => {
       )));
   }
 
-  if (status === 'pending')
-    return <TailSpin stroke="#3B0839" />;
+  if (status === 'pending') return <TailSpin stroke="#3B0839" />;
+  else if (!productList.length) return <Box>No search results found; please try searching again.</Box>
   else return (
     <SimpleGrid columns={{ base: 2, lg: 3 }} spacing={{ base: 2, lg: 8 }} direction='row'>
       <RenderFromData

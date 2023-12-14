@@ -1,8 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
 import cartReducer from './cart/cartSlice';
-import userReducer from './user/userSlice';
+import orderReducer from './order/orderSlice';
 import productReducer from './products/productsSlice';
 import stripeReducer from './stripe/stripeSlice';
+import userAddressReducer from './useraddress/userAddressSlice';
+import userReducer from './user/userSlice';
 import storage from 'redux-persist/lib/storage';
 import {
   persistStore,
@@ -23,10 +25,12 @@ const persistedReducer = persistReducer(persistConfig, cartReducer)
 
 export const store = configureStore({
   reducer: {
-    user: userReducer,
+    cart: persistedReducer,
+    order: orderReducer,
     product: productReducer,
     stripe: stripeReducer,
-    cart: persistedReducer,
+    userAddress: userAddressReducer,
+    user: userReducer,
     devTools: true
   },
   middleware: (getDefaultMiddleware) =>

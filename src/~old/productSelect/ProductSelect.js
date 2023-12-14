@@ -9,7 +9,7 @@ const ProductSelect = ({getSelectedProduct}) => {
   // Gets data of one product to display on the product page
   const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
-  let product = useSelector(getProduct);
+  const product = useSelector(getProduct);
   
   useEffect(() => {
     dispatch(fetchProduct(searchParams.get('id')));
