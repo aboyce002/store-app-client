@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { Link, useSearchParams } from 'react-router-dom';
 import { TailSpin } from 'react-loading-icons'
 import { Box, VStack, SimpleGrid, Image, Text, Center } from '@chakra-ui/react'
-import { filterProductsBySearchParams, fetchProducts, getProducts, getStatus } from '../../utils/products/productsSlice';
+import { makeGetFilteredProductList, fetchProducts, getProducts, getStatus } from '../../utils/products/productsSlice';
 import ConditionText from '../../components/productcolors/ConditionText';
 import RenderFromData from '../../components/renderfromdata/RenderFromData';
 
@@ -14,9 +14,9 @@ const Search = () => {
   const currentParams = Object.fromEntries([...searchParams]); // Array of param objects in key:value pairs ie: [id, 1] or [condition, new]
   const productList = useSelector(state => {
     if (searchParams)
-      return filterProductsBySearchParams(state, Object.keys(currentParams), Object.values(currentParams));
+      return makeGetFilteredProductList(state, { params: Object.keys(currentParams), paramValues: Object.values(currentParams) });
     else return getProducts(state);
-  });
+  }, shallowEqual);
 
   useEffect(() => {
     dispatch(fetchProducts());

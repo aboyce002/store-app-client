@@ -1,21 +1,9 @@
-import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from 'react-redux';
-import { TailSpin } from 'react-loading-icons'
-import { Button, Text } from '@chakra-ui/react'
-import { PaymentElement, CardElement, Elements, LinkAuthenticationElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { createPaymentIntent, getSecret, getStatus } from '../../../utils/stripe/stripeSlice';
-import { getTotalPrice } from '../../../utils/cart/cartSlice';
+import { useEffect } from "react";
+import { PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";;
 
-const StripeMerchant = () => {
-  const dispatch = useDispatch();
+const StripeMerchant = ({ clientSecret, setIsLoading, setMessage }) => {
   const stripe = useStripe();
   const elements = useElements();
-
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const totalPrice = useSelector(getTotalPrice);
-  const clientSecret = useSelector(getSecret);
 
   useEffect(() => {
     if (!stripe) {
@@ -42,7 +30,7 @@ const StripeMerchant = () => {
           break;
       }
     });
-  }, [stripe]);
+  }, [stripe, clientSecret]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -87,18 +75,9 @@ const StripeMerchant = () => {
       onChange={(e) => setEmail(e.value.email)}
     />
   */
- 
+
   return (
-    <form id="payment-form" onSubmit={handleSubmit}>
-      <PaymentElement id="payment-element" options={paymentElementOptions} />
-      <Button disabled={isLoading || !stripe || !elements} id="submit">
-        <Text id="button-text">
-          {isLoading ? <TailSpin /> : "Pay now"}
-        </Text>
-      </Button>
-      {/* Show any error or success messages */}
-      {message && <Text id="payment-message">{message}</Text>}
-    </form>
+    <PaymentElement id="payment-element" options={paymentElementOptions} />
   );
 }
 

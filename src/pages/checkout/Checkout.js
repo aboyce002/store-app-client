@@ -1,128 +1,238 @@
 import { useEffect, useState } from 'react';
-import { Link as ReactLink } from 'react-router-dom';
+import { Link as ReactLink, Outlet } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { TailSpin } from 'react-loading-icons'
-import { Box, Button, Checkbox, Divider, Heading, Grid, GridItem, Link, Stack, Text, Spacer, VStack, StackDivider } from '@chakra-ui/react'
-import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel } from '@chakra-ui/react'
+import {
+  Button, Divider, Heading, Grid, GridItem, Link, Stack, Text, Spacer, VStack, StackDivider, HStack, Flex, Image,
+  Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel
+} from '@chakra-ui/react'
 import PaypalMerchant from '../../components/checkoutoptions/paypalMerchant/PaypalMerchant';
 import StripeMerchant from '../../components/checkoutoptions/stripeMerchant/StripeMerchant';
 import { loadStripe } from '@stripe/stripe-js';
-import { Elements } from "@stripe/react-stripe-js";
+import { Elements, useElements, useStripe } from "@stripe/react-stripe-js";
 import { createPaymentIntent, getSecret, getStatus } from '../../utils/stripe/stripeSlice';
 import { getCart, getTotalPrice, getTotalQuantity } from '../../utils/cart/cartSlice';
-import { setCurrentAddress } from '../../utils/useraddress/userAddressSlice';
+import { getUser } from '../../utils/user/userSlice';
+import { fetchUserAddress, getCurrentAddress } from '../../utils/useraddress/userAddressSlice';
 import AddressForm from '../../components/forms/addressform/AddressForm';
-import OrderSummary from './components/OrderSummary';
+import OrderSummary from '../../components/ordersummary/OrderSummary';
 import RenderFromData from '../../components/renderfromdata/RenderFromData';
 import useDesktopSize from '../../hooks/useDesktopSize';
+// Icons
+import PaypalIcon from '../../assets/images/paypal (1).svg';
+import VisaIcon from '../../assets/images/visa.svg';
+import MastercardIcon from '../../assets/images/mastercard.svg';
+import AmericanExpressIcon from '../../assets/images/amex.svg';
+import DiscoverIcon from '../../assets/images/discover.svg';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
 const Checkout = () => {
-  const { field, handleSubmit, formState: { errors, isSubmitting } } = useForm();
+  const { register, handleSubmit, formState: { isSubmitting, errors } } = useForm();
   const dispatch = useDispatch();
   const status = useSelector(getStatus);
   const cart = useSelector(getCart);
   const isDesktopSize = useDesktopSize();
-  const secret = useSelector(getSecret);
   const totalPrice = useSelector(getTotalPrice);
   const totalQuantity = useSelector(getTotalQuantity);
+  const address = useSelector(getCurrentAddress);
+  const user = useSelector(getUser);
+  const [paymentMethod, setPaymentMethod] = useState('');
+  const secret = useSelector(getSecret);
   const options = {
     clientSecret: secret,
   };
-  const [paymentMethod, setPaymentMethod] = useState('1')
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     dispatch(createPaymentIntent(cart));
-  }, [cart]);
+    if (user)
+      if (user.main_address)
+        dispatch(fetchUserAddress(user.main_address));
+  }, [cart, user, dispatch]);
 
   const onSubmit = async (address) => {
-    dispatch(setCurrentAddress(address));
+    console.log("Checkout data has been submitted");
+  }
+  
+  const getPaymentButton = () => {
+    // No address selected
+    if (user && !address)
+      return <Text>Please provide an address.</Text>
+    // Paypal
+    else if (paymentMethod === 0)
+      return <PaypalMerchant />
+    // Stripe
+    else if (paymentMethod === 1)
+      return (
+        <VStack align="end">
+          <Button disabled={isLoading || !secret} colorScheme='mainBlue' w="32%" id="submit" type="submit">
+            <Text id="button-text">
+              {isLoading ? <TailSpin /> : "Place Order"}
+            </Text>
+          </Button>
+          {/* Show any error or success messages */}
+          {message && <Text id="payment-message">{message}</Text>}
+        </VStack>
+      )
+    // None selected
+    else
+      return <Text>Please select a payment method.</Text>
+  }
+
+  const getAddressSection = () => {
+    if (!user)
+      return (
+        <AddressForm register={register} errors={errors} />
+      )
+    if (address)
+      return (
+        <>
+          <Divider />
+          <VStack spacing={1} align="start">
+            <Text fontSize="17px" mb={1}>Ship To: </Text>
+            <Text fontWeight="600" fontSize="16px" pl={3.5}>{address.first_name} {address.last_name}</Text>
+            <Text pl={3.5}>{address.street}, {address.city}, {address.state} {address.zip}, {address.country}</Text>
+          </VStack>
+        </>
+      )
+    else
+      return <Text>You have no addresses saved.</Text>
   }
 
   const renderCheckout = () => {
     if (!secret)
       return <TailSpin stroke="#3B0839" />;
     else return (
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid
-          templateAreas={isDesktopSize ?
-            `"header header" 
+      <Grid
+        templateAreas={isDesktopSize ?
+          `"header header" 
           "main summary"`
-            :
-            `"header" 
+          :
+          `"header" 
           "main" 
           "summary"`}
-          gridTemplateColumns={isDesktopSize ? '1.5fr 1fr' : '1fr'}
-          gridTemplateRows={isDesktopSize ? '50px 1fr' : '1fr'}
-          py={1} gap={4} columnGap={12}>
-          <GridItem area={'header'}>
-            <Heading size='lg'>Checkout</Heading>
-            <Divider />
-          </GridItem>
+        gridTemplateColumns={isDesktopSize ? '1.5fr 1.0fr' : '1fr'}
+        gridTemplateRows={isDesktopSize ? '50px 1fr' : '1fr'}
+        py={1} columnGap={12} width={isDesktopSize ? '70%' : '100%'}>
 
+        <GridItem area={'header'}>
+          <Heading size='lg'>Checkout</Heading>
+        </GridItem>
+
+        {/* This is for the edit address modal */}
+        <Outlet />
+
+        <form onSubmit={handleSubmit(onSubmit)}>
           <GridItem area={'main'}>
-            <VStack align="start" divider={<StackDivider />}>
-              <Stack align="start">
-                <Heading size="md">Ship To</Heading>
-                <AddressForm />
-                <Stack align="end">
-                  <Checkbox >Update address</Checkbox>
+            <Flex divider={<StackDivider />}>
+              <VStack spacing={6} w="full">
+                <Stack w="full">
+                  <HStack>
+                    <Heading size="md">Shipping</Heading>
+                    {user && <>
+                      <Spacer />
+                      <Link as={ReactLink} to='/checkout/addresses' variant="text-link">Edit</Link>
+                    </>}
+                  </HStack>
+                  <Stack align="start">
+                    {getAddressSection()}
+                  </Stack>
                 </Stack>
+                <Stack w="full">
+                  <Heading size="md" align="start">Payment Method</Heading>
+                  <Accordion allowToggle onChange={(index) => { setPaymentMethod(index) }}>
+                    <AccordionItem>
+                      {({ isExpanded }) => (
+                        <>
+                          <h2>
+                            <AccordionButton bg={isExpanded ? "mainPurple.150" : "white"}>
+                              <HStack flex='1'>
+                                <Text>PayPal</Text>
+                                <Spacer />
+                                <Image boxSize='50px' src={PaypalIcon} mr={5} alt='Paypal Icon' />
+                              </HStack>
+                              <AccordionIcon />
+                            </AccordionButton>
+                          </h2>
+                          <AccordionPanel pb={4}>
+                            On order placement, you will be redirected to PayPal to finish your transaction.
+                          </AccordionPanel>
+                        </>
+                      )}
+                    </AccordionItem>
+                    <AccordionItem>
+                      {({ isExpanded }) => (
+                        <>
+                          <h2>
+                            <AccordionButton bg={isExpanded ? "mainPurple.150" : "white"}>
+                              <HStack flex='1'>
+                                <Text>Card</Text>
+                                <Spacer />
+                                <Image boxSize='50px' src={VisaIcon} alt='Visa Icon' />
+                                <Image boxSize='50px' src={MastercardIcon} alt='Mastercard Icon' />
+                                <Image boxSize='50px' src={AmericanExpressIcon} alt='American Express Icon' />
+                                <Image boxSize='50px' src={DiscoverIcon} mr={5} alt='Discover Icon' />
+                              </HStack>
+                              <AccordionIcon />
+                            </AccordionButton>
+                          </h2>
+                          <AccordionPanel pb={4}>
+                            <Elements key={secret} stripe={stripePromise} options={options}>
+                              <StripeMerchant
+                                clientSecret={secret}
+                                setIsLoading={setIsLoading}
+                                setMessage={setMessage} />
+                            </Elements>
+                          </AccordionPanel>
+                        </>
+                      )}
+                    </AccordionItem>
+                  </Accordion>
+                </Stack>
+              </VStack>
+            </Flex>
+          </GridItem>
+        </form>
+
+        <GridItem area={'summary'}>
+          <Flex w="100%" wrap="wrap">
+            <VStack align="start" spacing={6}>
+              <Stack fontSize="15px" spacing={1} w="100%">
+                <Heading size="md" align="start">Summary</Heading>
+                <Divider />
+                <HStack pt={1}>
+                  <VStack align="start" spacing={1}>
+                    <Text>Subtotal ({Number(totalQuantity)} items): </Text>
+                    <Text>Shipping & Handling: </Text>
+                    <Text>Tax: </Text>
+                  </VStack>
+                  <Spacer />
+                  <VStack align="end" spacing={1}>
+                    <Text>${Number(totalPrice).toFixed(2)}</Text>
+                    <Text>$0</Text>
+                    <Text>$0</Text>
+                  </VStack>
+                </HStack>
+                <Divider />
+                <HStack py={1}>
+                  <Text fontWeight="600" fontSize="18px">Order Total: </Text>
+                  <Spacer />
+                  <Text fontWeight="600" fontSize="18px">${Number(totalPrice).toFixed(2)}</Text>
+                </HStack>
+                <Flex justify="right" zIndex={0}>
+                  {getPaymentButton()}
+                </Flex>
               </Stack>
-              <Stack>
-                <Heading size="md">Payment Method</Heading>
-                <Accordion allowToggle>
-                  <AccordionItem>
-                    <h2>
-                      <AccordionButton>
-                        <Box as="span" flex='1' textAlign='left'>
-                          PayPal
-                        </Box>
-                        <AccordionIcon />
-                      </AccordionButton>
-                    </h2>
-                    <AccordionPanel pb={4}>
-                      On order placement, you will be redirected to PayPal to finish your transaction.
-                    </AccordionPanel>
-                  </AccordionItem>
-                  <AccordionItem>
-                    <h2>
-                      <AccordionButton>
-                        <Box as="span" flex='1' textAlign='left'>
-                          Card
-                        </Box>
-                        <AccordionIcon />
-                      </AccordionButton>
-                    </h2>
-                    <AccordionPanel pb={4}>
-                      <Elements key={secret} stripe={stripePromise} options={options}>
-                        <StripeMerchant />
-                      </Elements>
-                    </AccordionPanel>
-                  </AccordionItem>
-                </Accordion>
-              </Stack>
-              <Stack>
+              <Stack align="start">
                 <OrderSummary />
               </Stack>
             </VStack>
-          </GridItem>
-          <GridItem area={'summary'}>
-            <Stack align="end">
-              <VStack fontSize="15px" spacing={1} py={2} align="end" justify="space-between">
-                <Spacer />
-                <Text>Subtotal ({Number(totalQuantity)} items): <u>${Number(totalPrice).toFixed(2)}</u></Text>
-                <Text>Shipping & Handling: <u>$0</u></Text>
-                <Text>Tax: <u>$0</u></Text>
-                <Text fontWeight="600" fontSize="18px">Order Total: <u>${Number(totalPrice).toFixed(2)}</u></Text>
-              </VStack>
-              <Button colorScheme='mainPurple'>Place Order</Button>
-            </Stack>
-          </GridItem>
-        </Grid>
-      </form>
+          </Flex>
+        </GridItem>
+      </Grid >
     );
   }
 

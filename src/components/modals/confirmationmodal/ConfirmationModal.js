@@ -1,27 +1,10 @@
 import { useState } from "react";
 import { useForm } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
-import { Button, 
-  FormControl, 
-  Modal, 
-  ModalOverlay, 
-  ModalContent, 
-  ModalBody, 
-  FormLabel, 
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverArrow,
-  PopoverCloseButton,
-  PopoverHeader,
-  PopoverBody,
-  PopoverFooter,
-  InputGroup, 
-  Input, 
-  InputRightElement, 
-  ModalFooter, 
-  ModalHeader, 
-  useToast } from '@chakra-ui/react';
+import {
+  Button, FormControl, Modal, ModalOverlay, ModalContent, ModalBody, FormLabel, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton,
+  PopoverHeader, PopoverBody, PopoverFooter, InputGroup, Input, InputRightElement, ModalFooter, ModalHeader, useToast
+} from '@chakra-ui/react';
 import ShowPasswordToggleButton from '../../buttons/showpasswordtogglebutton/ShowPasswordToggle';
 import { getUser, updateUser, verifyUserPass } from '../../../utils/user/userSlice';
 
@@ -36,11 +19,10 @@ const ConfirmationModal = ({ isOpen, onOpen, onClose, data, title, error, onConf
   const onSubmit = async (password) => {
     console.log("Verified account");
     const email = user.email;
-    const id = user.id;
-    if (dispatch(verifyUserPass({ email, password }))) {
+    (dispatch(verifyUserPass({ email, password }))).then(() => {
       onClose();
       onConfirm();
-    }
+    })
     return (
       toast({
         title: 'Error',
@@ -59,10 +41,10 @@ const ConfirmationModal = ({ isOpen, onOpen, onClose, data, title, error, onConf
   const googleAuthorize = () => {
     return (
       <ModalContent>
-        <ModalHeader align="center" color="#505050">{title}</ModalHeader>
+        <ModalHeader align="center">{title}</ModalHeader>
         <ModalBody>
           <FormControl>
-            <FormLabel as="u" htmlFor="account_deletion_confirm" color="gray.600">
+            <FormLabel as="u" htmlFor="account_deletion_confirm">
               This will delete your account and erase all data; please be sure you want to do this.
             </FormLabel>
           </FormControl>
@@ -77,8 +59,8 @@ const ConfirmationModal = ({ isOpen, onOpen, onClose, data, title, error, onConf
             <PopoverContent>
               <PopoverArrow />
               <PopoverCloseButton />
-              <PopoverHeader color="#505050">Confirm</PopoverHeader>
-              <PopoverBody color="#505050">Are you sure you want to delete your account?</PopoverBody>
+              <PopoverHeader>Confirm</PopoverHeader>
+              <PopoverBody>Are you sure you want to delete your account?</PopoverBody>
               <PopoverFooter>
                 <Button type="submit" colorScheme="red" mr={3} onClick={onConfirm}>
                   Yes
@@ -101,14 +83,14 @@ const ConfirmationModal = ({ isOpen, onOpen, onClose, data, title, error, onConf
   const confirmPass = () => {
     return (
       <ModalContent>
-        <ModalHeader align="center" color="#505050">{title}</ModalHeader>
+        <ModalHeader align="center">{title}</ModalHeader>
         <ModalBody>
           <FormControl>
-            <FormLabel htmlFor="password_confirm" color="gray.600">
+            <FormLabel htmlFor="password_confirm">
               Please enter your password
             </FormLabel>
             <InputGroup>
-              <Input focusBorderColor="main.500" name="password_confirm" id="password_confirm" type={show ? 'text' : 'password'} placeholder="Enter password" color="#505050" />
+              <Input focusBorderColor="main.500" name="password_confirm" id="password_confirm" type={show ? 'text' : 'password'} placeholder="Enter password" />
               <InputRightElement width='3.5rem'>
                 <ShowPasswordToggleButton show={show} setShow={setShow} />
               </InputRightElement>

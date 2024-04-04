@@ -13,7 +13,8 @@ const PaypalMerchant = () => {
         fundingSource='paypal'
         style={{
           layout: 'vertical',
-          shape: 'rect'
+          shape: 'rect',
+          zIndex: 0
         }}
         createOrder={(data, actions) => dispatch(createOrder(cart, data, actions))
           .unwrap()

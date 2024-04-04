@@ -75,4 +75,5 @@ export const getTotalPrice = (state) => {
   })
   return totalPrice;
 }
+
 export default cartSlice.reducer;

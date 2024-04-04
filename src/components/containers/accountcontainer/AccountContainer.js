@@ -1,11 +1,16 @@
-import { Flex } from '@chakra-ui/react'
+import { Outlet } from 'react-router-dom';
+import { Container, Grid } from '@chakra-ui/react';
+import AccountSidebar from "../../account/AccountSidebar";
 
-const AccountContainer = (props) => {
+const AccountContainer = () => {
   return (
-    <Flex bgColor="mainPurple.150" boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.15)" borderRadius="10px">
-      {props.children}
-    </Flex>
-  )
+    <Grid gridTemplateColumns={'1fr 4fr'} py={1} >
+      <AccountSidebar />
+      <Container maxW="container.sm">
+        <Outlet/>
+      </Container>
+    </Grid>
+  );
 }
 
 export default AccountContainer;

@@ -1,20 +1,23 @@
-import { Box, HStack, VStack, StackDivider, Text } from '@chakra-ui/react'
+import { HStack, VStack, Text, Flex, Box, SimpleGrid } from '@chakra-ui/react'
 
 const Footer = () => {
   return (
-    <Box align="center" p={2} bgColor="#3B0839" textStyle="footer">
-      <VStack spacing={-5}>
-        <Text>@Kass Crafts, 2023. All rights reserved.</Text>
-        <Text>All images are for show only and belong to their respective owners.</Text>
-        <Text>Website is a demo and does not represent the final product.</Text>
-        <HStack divider={<StackDivider />}>
-          <Text>Terms of Service </Text>
-          <Text>Privacy Policy</Text>
-          <Text>About Us</Text>
-          <Text>Contact Us</Text>
-        </HStack>
-      </VStack>
-    </Box>
+    <SimpleGrid columns={3} spacing={10} bgColor="#3B0839" textStyle="footer" w="full" py={2} px={5}>
+        <VStack align="start" spacing={0}>
+          <Text fontSize="11">Website is a demo and does not represent the final product.</Text>
+          <Text fontSize="11">All images are for show only and belong to their respective owners.</Text>
+        </VStack>
+        <VStack align="center" spacing={0}>
+          <Text>© 2024 Kass Crafts</Text>
+          <HStack spacing={3}>
+            <Text>Terms of Service </Text>
+            <Text>Privacy Policy</Text>
+            <Text>About Us</Text>
+            <Text>Contact Us</Text>
+          </HStack>
+        </VStack>
+        <Box />
+    </SimpleGrid>
   )
 }
 

@@ -1,4 +1,4 @@
-import { Button, IconButton, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Text, Container, Center } from '@chakra-ui/react';
+import { IconButton, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, useDisclosure, Text, Container, Center } from '@chakra-ui/react';
 import { FiSearch } from 'react-icons/fi';
 import SearchCategorySelect from '../../searchbar/SearchCategorySelect';
 import SearchBar from '../../searchbar/SearchBar';

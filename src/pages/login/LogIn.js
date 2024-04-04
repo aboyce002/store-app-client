@@ -1,45 +1,99 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link as ReactLink, Navigate } from 'react-router-dom';
-import { FcGoogle } from 'react-icons/fc';
 import { useForm } from 'react-hook-form';
-import { Stack, Box, Center, Text, Flex, Link, Button, FormControl, FormLabel, Input } from '@chakra-ui/react'
-import { getUser, loginUser } from '../../utils/user/userSlice';
+import { FcGoogle } from 'react-icons/fc';
+import { Stack, Box, Center, Text, Link, Button, FormControl, FormLabel, Input, useToast, InputRightElement, InputGroup, FormErrorMessage } from '@chakra-ui/react'
+import { clearError, getUser, getError, loginUser } from '../../utils/user/userSlice';
 import RenderFromData from '../../components/renderfromdata/RenderFromData';
 import LoginContainer from '../../components/containers/logincontainer/LoginContainer';
+import ShowPasswordToggleButton from "../../components/buttons/showpasswordtogglebutton/ShowPasswordToggle";
 
 const LogIn = () => {
   const dispatch = useDispatch();
+  const toast = useToast();
   const user = useSelector(getUser);
-  const { field, handleSubmit, formState: { errors, isSubmitting } } = useForm();
-  const [email, setEmailValue] = useState(null);
-  const [password, setPasswordValue] = useState(null);
+  const error = useSelector(getError);
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm();
+  const [showPassword, setShowPassword] = useState(false);
 
-  const onSubmit = async () => {
-    dispatch(loginUser({email, password}));
+  const onSubmit = async (data) => {
+    dispatch(loginUser({ email: data.email, password: data.password }));
+  }
+
+  const handleToast = useCallback(async () => {
+    if (user)
+      return (
+        toast({
+          title: 'Log in successful.',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        })
+      );
+  }, [user, toast])
+
+  useEffect(() => {
+    dispatch(clearError());
+  }, [dispatch]);
+
+  useEffect(() => {
+    handleToast();
+  }, [handleToast]);
+
+  const getErrorText = () => {
+    if (error) {
+      return (
+        <Text color="#E53E3E" fontSize="14px">
+          {error}
+        </Text>
+      )
+    }
   }
 
   const redirect = () => {
     return (
-      <Navigate replace to='/' />,
-      <Text>You are already logged in. Redirecting...</Text>
+      <Navigate to='/'>,
+        <Text>You are logged in. Redirecting...</Text>
+      </Navigate>
     );
   }
 
   const renderContent = () => {
     return (
-      <Stack>
+      <Stack w="full">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Stack spacing={5} fontSize="15px" color="black" bg="white">
-            <FormControl id="username" isInvalid={errors.name}>
+          <Stack spacing={5}>
+            <FormControl id="email" name="email" isInvalid={errors.email}>
               <FormLabel>Email</FormLabel>
-              <Input type="text" onChange={(event) => setEmailValue(event.target.value)}/>
+              <Input
+                type="email"
+                autoComplete="email"
+                {...register("email", { required: true })} />
+              <FormErrorMessage>
+                {errors.email && errors.email.type === "required" && (
+                  <span role="alert">Email field cannot be blank.</span>
+                )}
+              </FormErrorMessage>
             </FormControl>
-            <FormControl id="password">
+            <FormControl id="password" name="password" isInvalid={errors.password}>
               <FormLabel>Password</FormLabel>
-              <Input type="password" onChange={(event) => setPasswordValue(event.target.value)}/>
+              <InputGroup>
+                <Input
+                  type={showPassword ? 'text' : 'password'}
+                  {...register("password", { required: true })} />
+                <InputRightElement width='3.5rem'>
+                  <ShowPasswordToggleButton show={showPassword} setShow={setShowPassword} />
+                </InputRightElement>
+              </InputGroup>
+              <FormErrorMessage>
+                {errors.password && errors.password.type === "required" && (
+                  <span role="alert">You must enter a password.</span>
+                )}
+              </FormErrorMessage>
             </FormControl>
-            <Button fontSize="xl" isLoading={isSubmitting} onClick={onSubmit}>Log In</Button>
+            {getErrorText()}
+            <Button fontSize="xl" type="submit" isLoading={isSubmitting}>Log In</Button>
           </Stack>
         </form>
         <Box>
@@ -51,7 +105,7 @@ const LogIn = () => {
             </Button>
           </a>
         </Box>
-        <Text>Don't have an account? <Link as={ReactLink} to='/register'>Register here</Link></Text>
+        <Text>Don't have an account? <Link as={ReactLink} to='/register' variant="text-link-blue">Register here</Link></Text>
       </Stack>
     );
   }

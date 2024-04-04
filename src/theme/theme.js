@@ -1,5 +1,6 @@
 import { extendTheme } from '@chakra-ui/react'
 import { menuTheme } from './menuTheme'
+import { modalTheme } from './modalTheme'
 
 const theme = extendTheme(
   {
@@ -75,6 +76,7 @@ const theme = extendTheme(
     // Component base styles
     components: {
       Menu: menuTheme,
+      Modal: modalTheme,
       Link: {
         baseStyle: {
           color: 'mainPurple.300',
@@ -88,13 +90,13 @@ const theme = extendTheme(
           'text-link': {
             color: 'mainPurple.600',
             _hover: {
-              color: 'mainPurple.300',
+              color: 'mainPurple.400',
             },
           },
           'text-link-blue': {
-            color: 'mainBlue.900',
+            color: 'mainBlue.600',
             _hover: {
-              color: 'mainPurple.150',
+              color: 'mainBlue.500',
             },
           }
         },
@@ -112,6 +114,17 @@ const theme = extendTheme(
           fontWeight: '400',
           letterSpacing: '.02em',
           lineHeight: '1.2em',
+        },
+        variants: {
+          'inverted': {
+            bg: 'white',
+            color: 'mainBlue.600',
+            border: '1px',
+            borderColor: 'mainBlue.600',
+            _hover: {
+              bg: '#D9EFF9',
+            },
+          },
         },
       },
       IconButton: {

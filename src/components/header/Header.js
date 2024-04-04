@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { Link as ReactLink } from 'react-router-dom';
 import { Box, Button, IconButton, Image, Link, HStack, Spacer, Text } from '@chakra-ui/react';
 import { Menu, MenuButton, MenuList, MenuItem, MenuGroup, MenuDivider } from '@chakra-ui/react';
-import { FiUser } from 'react-icons/fi';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import { IoCaretDownOutline } from "react-icons/io5";
 import CartButton from '../buttons/cartbutton/CartButton';
@@ -66,10 +65,8 @@ const Header = () => {
         <HStack px={4}
           bgGradient='linear(to-r, #7E1F69, #3B0839)'
           textStyle="header">
-          <Box w={150}>
-            <ReactLink to='/'>
-              <Image objectFit="cover" src={require('../../assets/images/logo.png')} alt='Logo'></Image>
-            </ReactLink>
+          <Box as={ReactLink} to='/' w={150}>
+            <Image objectFit="cover" src={require('../../assets/images/logo.png')} alt='Logo'></Image>
           </Box>
           <Spacer />
           <HStack spacing={3}>
@@ -90,9 +87,12 @@ const Header = () => {
         data={user}
         ifFalse={
           <HStack>
-            <Button><ReactLink to="/login">Log In</ReactLink>
+            <Button as={ReactLink} to="/login" colorscheme="mainBlue" variant="inverted">
+              Log In
             </Button>
-            <Button colorScheme="mainPurple" bgColor="white" variant="outline"><ReactLink to="/register">Sign Up</ReactLink></Button>
+            <Button as={ReactLink} to="/register">
+              Sign Up
+            </Button>
           </HStack>
         }
         ifExists={renderAccountMenu()} />

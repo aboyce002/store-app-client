@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import serverApi from '../../api/serverApi';
 
 export const fetchProduct = createAsyncThunk('products/fetchProduct', async (id) => {
@@ -53,8 +53,8 @@ export const getProducts = state => state.product.productList;
 export const getProductById = (state, productId) =>
   state.product.productList.find(product => product.id === productId);
 export const getStatus = state => state.product.status;
-export const filterProductsBySearchParams = (state, params, paramValues) => {
-  let filteredList = state.product.productList;
+/*export const filterProductsBySearchParams = (productList, params, paramValues) => {
+  let filteredList = productList;
   for (let i = 0; i < params.length; i++) {
     if (paramValues[i] != null) {
       if (params[i].toLowerCase() === 'title') {
@@ -65,5 +65,31 @@ export const filterProductsBySearchParams = (state, params, paramValues) => {
     }
   }
   return filteredList;
+}*/
+export const makeGetFilteredProductList = (state, searchParams) => {
+  const getFilteredProductList = createSelector(
+    [
+      getProducts,
+      (state, searchParams) => searchParams,
+    ],
+    (productList, searchParams) => {
+      let params = searchParams.params;
+      let paramValues = searchParams.paramValues;
+      let filteredList = productList;
+      for (let i = 0; i < params.length; i++) {
+        if (paramValues[i] != null) {
+          if (params[i].toLowerCase() !== 'title') {
+            filteredList = productList.filter(product => product[params[i]] === paramValues[i]);
+          }
+          else
+            filteredList = productList.filter(product => (String(product.title).toLowerCase().includes(String(paramValues[i]).toLowerCase())))
+
+        }
+      }
+      return filteredList;
+    }
+  );
+  return getFilteredProductList(state, searchParams);
 }
+
 export default productSlice.reducer;

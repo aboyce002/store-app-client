@@ -1,15 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import serverApi from '../../api/serverApi';
 
-export const handleToken = createAsyncThunk('stripe/handleToken', async (token) => {
-  try {
-    const res = await serverApi.post('/stripe', token);
-    return res.data;
-  } catch (error) {
-    return console.error(error.message);
-  }
-});
-
 export const createOrder = createAsyncThunk('paypal/createOrder', async (cartItems, data, actions) => {
   try {
     const res = await serverApi.post('/paypal/create-paypal-order', {

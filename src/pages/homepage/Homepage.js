@@ -1,21 +1,20 @@
-import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { Link as ReactLink } from 'react-router-dom';
-import { Link, Box, HStack, VStack, Image, Container, SimpleGrid, Heading, Text, Flex, Stack, Center, useBreakpoint, Spacer, Divider } from '@chakra-ui/react';
-import { BiRightArrowAlt } from 'react-icons/bi';
+import { Link, Box, HStack, VStack, Image, Container, SimpleGrid, Heading, Flex, Spacer, Divider, Text } from '@chakra-ui/react';
 import HomeCarousel from '../../components/carousels/homecarousel/HomeCarousel';
-import { filterProductsBySearchParams, fetchProducts, getStatus } from '../../utils/products/productsSlice';
+import RenderFromData from '../../components/renderfromdata/RenderFromData';
+import { fetchProducts, makeGetFilteredProductList } from '../../utils/products/productsSlice';
 
 const Homepage = () => {
   const dispatch = useDispatch();
-  const productList = useSelector(state => filterProductsBySearchParams(state, ["condition"], ["new"]));
-  const status = useSelector(getStatus);
+  const productList = useSelector(state => makeGetFilteredProductList(state, { params: ["condition"], paramValues: ["new"] }), shallowEqual);
 
   useEffect(() => {
     dispatch(fetchProducts());
-  }, []);
+  }, [dispatch]);
 
-  const getLastFiveNewestProducts = () => {
+  const getLastSixNewestProducts = () => {
     const reversedProductList = productList.slice(0, 6);
     return reversedProductList.map(product => (
       <Box key={product.id}>
@@ -41,13 +40,17 @@ const Homepage = () => {
           <Link as={ReactLink} to={{ pathname: "/search", search: "?condition=new" }}>
             <HStack>
               <Heading fontSize='25px' fontWeight="600">View All</Heading>
-              <BiRightArrowAlt fontSize="25px" />
             </HStack>
           </Link>
         </HStack>
         <Divider />
         <SimpleGrid columns={{ base: 2, sm: 3, lg: 6 }} spacing={4} alignItems="center">
-          {getLastFiveNewestProducts()}
+          <RenderFromData
+            data={productList}
+            ifNull={<Text></Text>}
+            ifFalse={<Text>Error retrieving products.</Text>}
+            ifEmpty={<Text></Text>}
+            ifExists={getLastSixNewestProducts()} />
         </SimpleGrid>
       </VStack>
     </Container>

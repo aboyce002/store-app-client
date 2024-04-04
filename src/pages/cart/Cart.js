@@ -40,7 +40,7 @@ const Cart = () => {
           </Box>
         </VStack>
         <Spacer />
-        <VStack spacing={1}>
+        <VStack spacing={1} align="end">
           <Text fontWeight="600" fontSize="18px">${Number(getProductSubtotal(product)).toFixed(2)}</Text>
           <Text fontWeight="400" fontSize="13px">${Number(product.price).toFixed(2)}/Unit</Text>
         </VStack>
@@ -58,19 +58,18 @@ const Cart = () => {
     <Grid gridTemplateColumns={'1fr 2.5fr 1fr'} py={1} gap={4} w="100%">
       <Box></Box>
       <Stack divider={<StackDivider />}>
-        <HStack align="end">
-          <Heading size='lg'>Shopping Cart</Heading>
-          <Spacer />
-          <Box fontWeight="600" fontSize="18px">Price</Box>
-        </HStack>
+        <Heading size='lg' align="start">Shopping Cart</Heading>
         <VStack divider={<StackDivider />}>{getCartProducts()}</VStack>
       </Stack>
       <Flex align="flex-start" justify="center">
         <VStack fontSize="18px" border="1px" borderRadius="md" borderColor="mainPurple.300" p={5} mt={10} position="sticky" top={100}>
-          <Text>Subtotal ({Number(totalQuantity)} items): <b>${Number(totalPrice).toFixed(2)}</b>
-          </Text>
+          <HStack>
+            <Text>Subtotal ({Number(totalQuantity)} items):</Text>
+            <Spacer />
+            <Text><b>${Number(totalPrice).toFixed(2)}</b></Text>
+          </HStack>
           <Link as={ReactLink} to='/checkout'>
-            <Button colorScheme='mainPurple'>Proceed To Payment</Button>
+            <Button colorScheme='mainBlue'>Proceed To Payment</Button>
           </Link>
         </VStack>
       </Flex>

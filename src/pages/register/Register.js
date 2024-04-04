@@ -1,33 +1,52 @@
-import { useState, useRef } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link as ReactLink, Navigate } from 'react-router-dom';
+import { Link as ReactLink, Navigate, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { Stack, Button, FormControl, FormLabel, Input, ListItem, Link, Text, UnorderedList, useToast } from '@chakra-ui/react';
+import {
+  Stack, Button, FormControl, FormErrorMessage, FormLabel, Input, Link, Text, UnorderedList,
+  Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverFooter, PopoverHeader, PopoverTrigger, ListItem, InputRightElement, InputGroup
+} from '@chakra-ui/react';
 import ReCAPTCHA from "react-google-recaptcha"
-import { getUser, registerUser } from '../../utils/user/userSlice';
+import { clearError, getError, getStatus, getUser, registerUser } from '../../utils/user/userSlice';
 import RenderFromData from '../../components/renderfromdata/RenderFromData';
 import LoginContainer from '../../components/containers/logincontainer/LoginContainer';
+import ShowPasswordToggleButton from "../../components/buttons/showpasswordtogglebutton/ShowPasswordToggle";
 
 const Register = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector(getUser);
-  const { field, handleSubmit, formState: { errors, isSubmitting } } = useForm();
-  const [email, setEmailValue] = useState(null);
-  const [password, setPasswordValue] = useState(null);
+  const error = useSelector(getError);
+  const status = useSelector(getStatus);
+  const { register, handleSubmit, formState: { isSubmitting, errors } } = useForm();
   const captchaRef = useRef(null)
-  const toast = useToast();
+  const [showPassword, setShowPassword] = useState(false);
 
-  const onSubmit = async () => {
-    dispatch(registerUser({ email, password }));
-    return (
-      toast({
-        title: 'Account created successfully',
-        description: "You may now log in.",
-        status: 'success',
-        duration: 9000,
-        isClosable: true,
-      })
-    )
+  const onSubmit = async (data) => {
+    dispatch(registerUser({ email: data.email, password: data.password }));
+  }
+
+  const handleRedirect = useCallback(async () => {
+    if (status === 'fulfilled')
+      navigate('/register/success');
+  }, [status, navigate])
+
+  useEffect(() => {
+    dispatch(clearError());
+  }, [dispatch]);
+
+  useEffect(() => {
+    handleRedirect();
+  }, [handleRedirect]);
+
+  const getErrorText = () => {
+    if (error) {
+      return (
+        <Text color="#E53E3E" fontSize="14px">
+          {error}
+        </Text>
+      )
+    }
   }
 
   const redirect = () => {
@@ -38,30 +57,86 @@ const Register = () => {
   }
 
   // Email verification. Eventually.
+  // Limit fields to 254 characters so the db doesn't explode
+  // 72 for passwords
   const renderContent = () => {
     return (
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Stack spacing={5} fontSize="15px" color="black" bg="white">
-          <FormControl id="email">
-            <FormLabel>Email Address</FormLabel>
-            <Input type="email" onChange={(event) => setEmailValue(event.target.value)} />
-          </FormControl>
-          <FormControl id="password">
-            <FormLabel>Password</FormLabel>
-            <Input type="password" onChange={(event) => setPasswordValue(event.target.value)} />
-          </FormControl>
-          <UnorderedList>
-            <Text>Password must contain at least:</Text>
-            <Text>8 characters.</Text>
-            <Text>One lowercase and one uppercase character.</Text>
-            <Text>One number</Text>
-            <Text>One special character (such as @!#$%^*)</Text>
-          </UnorderedList>
-          <ReCAPTCHA sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY} ref={captchaRef} />
-          <Button fontSize="xl" isLoading={isSubmitting} onClick={onSubmit}>Register</Button>
-          <Text>Already have an account? <Link as={ReactLink} to='/login'>Log in here</Link></Text>
-        </Stack>
-      </form>
+      <Stack w="full">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Stack spacing={5}>
+            <FormControl id="email" name="email" isInvalid={errors.email}>
+              <FormLabel>Email</FormLabel>
+              <Input
+                type="email"
+                autoComplete="email"
+                {...register("email", { required: true, maxLength: 254 })} />
+              <FormErrorMessage>
+                {errors.password && errors.password.type === "required" && (
+                  <span role="alert">Email field cannot be blank.</span>
+                )}
+                {errors.password && errors.password.type === "maxLength" && (
+                  <span role="alert">Email is too long.</span>
+                )}
+              </FormErrorMessage>
+            </FormControl>
+            <Popover
+              returnFocusOnClose={false}
+              placement='right-start'
+              closeOnBlur={true}
+              trigger="hover"
+            >
+              <PopoverTrigger>
+                <FormControl id="password" name="password" isInvalid={errors.password}>
+                  <FormLabel>Password</FormLabel>
+                  <InputGroup>
+                    <Input
+                      type={showPassword ? 'text' : 'password'}
+                      aria-invalid={errors.name ? "true" : "false"}
+                      {...register("password", { required: true, minLength: 8, maxLength: 72, pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/ })}
+                    />
+                    <InputRightElement width='3.5rem'>
+                      <ShowPasswordToggleButton show={showPassword} setShow={setShowPassword} />
+                    </InputRightElement>
+                  </InputGroup>
+                  <FormErrorMessage>
+                    {errors.password && errors.password.type === "required" && (
+                      <span role="alert">You must enter a password.</span>
+                    )}
+                    {errors.password && errors.password.type === "maxLength" && (
+                      <span role="alert">Max length exceeded.</span>
+                    )}
+                    {errors.password && errors.password.type === "minLength" && (
+                      <span role="alert">Minimum length not met.</span>
+                    )}
+                    {errors.password && errors.password.type === "pattern" && (
+                      <span role="alert">Password requirements not met.</span>
+                    )}
+                  </FormErrorMessage>
+                </FormControl>
+              </PopoverTrigger>
+              <PopoverContent display='flex' align='left'>
+                <PopoverHeader fontWeight='semibold'>Choosing a Password</PopoverHeader>
+                <PopoverArrow />
+                <PopoverBody>
+                  <Text>Password must contain at least:</Text>
+                </PopoverBody>
+                <PopoverFooter>
+                  <UnorderedList ml={10}>
+                    <ListItem>8 characters</ListItem>
+                    <ListItem>Uppercase and lowercase</ListItem>
+                    <ListItem>One number</ListItem>
+                    <ListItem>One special character</ListItem>
+                  </UnorderedList>
+                </PopoverFooter>
+              </PopoverContent>
+            </Popover>
+            <ReCAPTCHA sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY} ref={captchaRef} />
+            {getErrorText()}
+            <Button fontSize="xl" type="submit" isLoading={isSubmitting}>Register</Button>
+            <Text>Already have an account? <Link as={ReactLink} to='/login' variant="text-link-blue">Log in here</Link></Text>
+          </Stack>
+        </form>
+      </Stack >
     );
   }
 
@@ -72,7 +147,7 @@ const Register = () => {
         ifFalse={renderContent()}
         ifExists={redirect()} />
     </LoginContainer>
-  )
+  );
 }
 
 export default Register;

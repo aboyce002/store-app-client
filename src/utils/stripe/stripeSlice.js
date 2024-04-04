@@ -3,16 +3,21 @@ import serverApi from '../../api/serverApi';
 
 export const handleToken = createAsyncThunk('stripe/handleToken', async (token) => {
   try {
-    const res = await serverApi.post('/stripe', token);
+    const res = await serverApi.post('/stripe', { token });
     return res.data;
   } catch (error) {
     return console.error(error.message);
   }
 });
 
-export const getStripeSecret = createAsyncThunk('stripe/getStripeSecret', async (token, amount) => {
+export const getStripeSecret = createAsyncThunk('stripe/getStripeSecret', async ({ token, amount }) => {
   try {
-    const res = await serverApi.post('/stripe/create-payment-intent', token, amount);
+    // Fix this???
+    const res = await serverApi.post('/stripe/create-payment-intent',
+      {
+        token: token,
+        amount: amount
+      });
     return res.data;
   } catch (error) {
     return console.error(error.message);
