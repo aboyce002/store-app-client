@@ -1,13 +1,11 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
 import { Button, Modal, ModalOverlay, ModalCloseButton, ModalContent, ModalBody, ModalFooter, ModalHeader, Text, useDisclosure, useToast, VStack } from '@chakra-ui/react';
 import { deleteUserAddress, getAddressFromId } from "../../../utils/useraddress/userAddressSlice";
 import RenderFromData from "../../renderfromdata/RenderFromData";
 
 const DeleteAddressConfirmationModal = () => {
-  const { field, handleSubmit, formState: { errors, isSubmitting } } = useForm();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { addressId } = useParams();
   const address = useSelector(state => getAddressFromId(state, addressId));

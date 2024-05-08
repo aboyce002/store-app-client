@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import { Link as ReactLink } from 'react-router-dom';
-import { Flex, Text, IconButton, Divider, Avatar, Heading } from '@chakra-ui/react'
-import { FiCreditCard, FiMapPin, FiMenu, FiInbox, FiUser, } from 'react-icons/fi'
+import { Flex } from '@chakra-ui/react'
+import { FiMapPin, FiInbox, FiUser, } from 'react-icons/fi'
 import NavItem from './NavItem'
 
 export default function Sidebar() {

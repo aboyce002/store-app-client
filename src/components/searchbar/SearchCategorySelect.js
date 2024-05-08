@@ -1,17 +1,9 @@
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { Select } from '@chakra-ui/react'
 import { CurrentCategoryContext } from '../header/Header';
 
 const SearchCategorySelect = () => {
   const { categoryValue, setCategoryValue } = useContext(CurrentCategoryContext);
-
-  // w='400px'
-  const options = [
-    { label: 'Charms', value: 'charms' },
-    { label: 'Plushies', value: 'plushies' },
-    { label: 'Prints', value: 'prints' },
-    { label: 'Stickers', value: 'stickers' },
-  ];
 
   return (
     <Select

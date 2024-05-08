@@ -1,6 +1,6 @@
 import { Link as ReactLink } from 'react-router-dom';
 import { HiShoppingBag } from "react-icons/hi2";
-import { Box, IconButton, Menu, MenuButton, MenuList, MenuItem, MenuGroup } from '@chakra-ui/react';
+import { Box, IconButton, Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
 
 const MobileCategoryMenu = () => {
   return (

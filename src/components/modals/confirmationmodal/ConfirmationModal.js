@@ -6,7 +6,7 @@ import {
   PopoverHeader, PopoverBody, PopoverFooter, InputGroup, Input, InputRightElement, ModalFooter, ModalHeader, useToast
 } from '@chakra-ui/react';
 import ShowPasswordToggleButton from '../../buttons/showpasswordtogglebutton/ShowPasswordToggle';
-import { getUser, updateUser, verifyUserPass } from '../../../utils/user/userSlice';
+import { getUser, verifyUserPass } from '../../../utils/user/userSlice';
 
 const ConfirmationModal = ({ isOpen, onOpen, onClose, data, title, error, onConfirm }) => {
   // Gets data of one product to display on the product page

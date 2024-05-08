@@ -1,15 +1,15 @@
 import { useState } from "react";
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
-import { Box, Button, Divider, FormControl, FormErrorMessage, FormLabel, InputGroup, Input, InputLeftElement, InputRightElement, Icon, Heading, Stack, Text, useDisclosure } from '@chakra-ui/react';
-import { FaRegEnvelope, FaLock } from "react-icons/fa";
+import { Box, Button, FormControl, FormErrorMessage, FormLabel, InputGroup, Input, InputLeftElement, InputRightElement, Icon, Heading, Stack, Text, useDisclosure } from '@chakra-ui/react';
+import { FaLock } from "react-icons/fa";
 import ConfirmationModal from '../../modals/confirmationmodal/ConfirmationModal';
 import { getUser } from '../../../utils/user/userSlice';
 import ShowPasswordToggleButton from "../../buttons/showpasswordtogglebutton/ShowPasswordToggle";
 
 //setError('registerInput', { type: 'custom', message: 'custom message' });
 const UpdatePasswordForm = () => {
-  const { register, getValues, handleSubmit, setError, formState: { errors } } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [show, setShow] = useState(false);
   const user = useSelector(getUser);

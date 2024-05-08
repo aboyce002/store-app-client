@@ -1,7 +1,7 @@
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
-import { Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from '@chakra-ui/react'
+import { Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react'
 import { VscChevronRight } from "react-icons/vsc";
 
 const Breadcrumbs = () => {
@@ -17,7 +17,7 @@ const Breadcrumbs = () => {
       setPath(location.pathname + location.search);
       setCategory(currentValue);
     }
-  }, [location]);
+  }, [location, currentValue]);
 
   const getProductBreadcrumb = () => {
     if (category && path != null)
@@ -37,7 +37,7 @@ const Breadcrumbs = () => {
       )
   }
 
-  if (location.pathname === "/search" || location.search !== '') {
+  if ((location.pathname === "/search" || location.pathname === "/product") && (location.search !== '')) {
     return (
       <Box spacing="35px" py={1} px={20} color='#3B0839' bgColor="white" boxShadow='sm' zIndex='1'>
         <Breadcrumb spacing='8px' separator={<VscChevronRight color='#3B0839' />}>

@@ -1,13 +1,13 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
-import { Box, Button, Divider, FormControl, FormErrorMessage, FormLabel, InputGroup, Input, InputLeftElement, Icon, Heading, Stack, Text, useDisclosure, useToast } from '@chakra-ui/react';
-import { FaRegEnvelope, FaLock } from "react-icons/fa";
+import { Box, Button, FormControl, FormErrorMessage, FormLabel, InputGroup, Input, InputLeftElement, Icon, Heading, Stack, Text, useDisclosure, useToast } from '@chakra-ui/react';
+import { FaRegEnvelope} from "react-icons/fa";
 import ConfirmationModal from '../../modals/confirmationmodal/ConfirmationModal';
 import { getUser, updateUser } from '../../../utils/user/userSlice';
 
 //setError('registerInput', { type: 'custom', message: 'custom message' });
 const AccountSettingsForm = () => {
-  const { register, getValues, handleSubmit, setError, formState: { errors } } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
   const dispatch = useDispatch();

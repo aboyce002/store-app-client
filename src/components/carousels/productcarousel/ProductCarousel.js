@@ -1,9 +1,6 @@
-import { useState, useRef, Fragment } from 'react';
-import { AbsoluteCenter, Box, Center, Circle, Container, IconButton, Image, Text, useBreakpointValue } from '@chakra-ui/react';
-// Here we have used react-icons package for the icons
-import { BiLeftArrowAlt, BiRightArrowAlt } from 'react-icons/bi';
+import { useState } from 'react';
+import { AbsoluteCenter, Container, IconButton, Image, useBreakpointValue } from '@chakra-ui/react';
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
-// And react-slick as our Carousel Lib
 import Slider from 'react-slick';
 
 const ProductCarousel = (props) => {
@@ -41,23 +38,6 @@ const ProductCarousel = (props) => {
 
   // These are the images used in the slide
   const cards = props.product.additional_images;
-
-  /*
-          <Circle aria-label="left-arrow"
-          fontSize={arrowSize}
-          color="white"
-          colorScheme='mainPurple'
-          variant="ghost"
-          _hover={{ bg: 'rgba(33, 33, 33, 0.3)' }}
-          position="absolute"
-          left={side}
-          top={top}
-          transform={'translate(0%, -50%)'}
-          zIndex={1}
-          onClick={() => slider?.slickPrev()}>
-          <AiOutlineLeft />
-        </Circle>
-  */
 
   return (
     <AbsoluteCenter>

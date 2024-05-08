@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link as ReactLink } from 'react-router-dom';
-import { Flex, Text, Icon, Link, Menu, MenuButton, MenuList } from '@chakra-ui/react'
-import NavHoverBox from './NavHoverBox'
+import { Flex, Text, Icon, Link, Menu, MenuButton } from '@chakra-ui/react'
 
 export default function NavItem({ icon, title, description, link, active, navSize }) {
   return (

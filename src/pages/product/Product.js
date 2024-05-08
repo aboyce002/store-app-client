@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useSearchParams, Link } from 'react-router-dom';
 import { TailSpin } from 'react-loading-icons'
-import { Box, HStack, VStack, Image, Flex, Button, Heading, Text, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, useDisclosure } from '@chakra-ui/react'
+import { Box, HStack, VStack, Image, Flex, Button, Heading, Modal, ModalOverlay, ModalContent, ModalBody, useDisclosure } from '@chakra-ui/react'
 import { addToCart } from '../../utils/cart/cartSlice';
 import { fetchProduct, getProduct, getStatus } from '../../utils/products/productsSlice';
-import RenderFromData from '../../components/renderfromdata/RenderFromData';
 import ProductCarousel from '../../components/carousels/productcarousel/ProductCarousel'
 
 const Product = () => {
@@ -20,7 +19,7 @@ const Product = () => {
   useEffect(() => {
     dispatch(fetchProduct(searchParams.get('id')));
     setCurrentImage(product?.image);
-  }, [product?.id]);
+  }, [product?.id, product?.image, searchParams, dispatch]);
 
   const getAvailability = (product) => {
     if (product.availability !== "available")
@@ -102,13 +101,6 @@ const Product = () => {
     return <TailSpin stroke="#3B0839" />;
   else return (
     renderProduct()
-    /*
-    <RenderFromData
-      data={product}
-      ifNull={<Box>Error: Product not found.</Box>}
-      ifFalse={<Box>Error: Cannot fetch product.</Box>}
-      ifExists={renderProduct()} />
-    */
   )
 }
 

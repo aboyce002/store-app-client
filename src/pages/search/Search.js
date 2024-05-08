@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { Link, useSearchParams } from 'react-router-dom';
 import { TailSpin } from 'react-loading-icons'
-import { Box, VStack, SimpleGrid, Image, Text, Center } from '@chakra-ui/react'
+import { Box, SimpleGrid, Image, Text, Center } from '@chakra-ui/react'
 import { makeGetFilteredProductList, fetchProducts, getProducts, getStatus } from '../../utils/products/productsSlice';
 import ConditionText from '../../components/productcolors/ConditionText';
 import RenderFromData from '../../components/renderfromdata/RenderFromData';
@@ -20,8 +20,7 @@ const Search = () => {
 
   useEffect(() => {
     dispatch(fetchProducts());
-    console.log("product list: ", productList);
-  }, [searchParams]);
+  }, [searchParams, dispatch]);
 
   const renderProductList = () => {
     return (

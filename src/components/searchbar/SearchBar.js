@@ -1,8 +1,7 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Input, InputGroup, InputRightElement, InputLeftElement, FormControl, FormErrorMessage, HStack, Select, IconButton } from '@chakra-ui/react'
+import { Input, InputGroup, InputRightElement, InputLeftElement, FormControl, FormErrorMessage, HStack, IconButton } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form';
-import * as yup from 'yup';
 import { FiSearch } from 'react-icons/fi';
 import { CurrentCategoryContext } from '../header/Header';
 import SearchCategorySelect from './SearchCategorySelect';

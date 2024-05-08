@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { Flex, Text } from '@chakra-ui/react'
+import { Flex, Text } from '@chakra-ui/react';
 import { useDispatch } from 'react-redux';
 import { fetchUser } from '../utils/user/userSlice';
+import socketIO from 'socket.io-client';
 import AccountContainer from './containers/accountcontainer/AccountContainer';
 import AccountAddresses from '../pages/account/subpages/addresses/addresses/AccountAddresses';
 import AccountOrderDetails from '../pages/account/subpages/orders/orderdetails/AccountOrderDetails';
@@ -13,15 +14,15 @@ import AddressModalContainer from './containers/addressmodalcontainer/AddressMod
 import AddAddress from '../pages/account/subpages/addresses/addaddress/AddAddress';
 import AddAddressModal from './modals/checkoutaddressmodal/AddAddressModal';
 import AddressListModal from './modals/checkoutaddressmodal/AddressListModal';
+import Checkout from '../pages/checkout/Checkout';
 import DeleteAddressConfirmationModal from './modals/deleteaddressconfirmationmodal/DeleteAddressConfirmationModal';
 import EditAddress from '../pages/account/subpages/addresses/editaddress/EditAddress';
 import EditAddressModal from './modals/checkoutaddressmodal/EditAddressModal';
 import Cart from '../pages/cart/Cart';
-import Checkout from '../pages/checkout/Checkout';
+import CheckoutContainer from './containers/checkoutcontainer/CheckoutContainer';
 import Footer from './footer/Footer';
 import Header from './header/Header';
 import PageContainer from './containers/pagecontainer/PageContainer';
-import PaymentFailure from '../pages/paymentfailure/PaymentFailure';
 import PaymentSuccess from '../pages/paymentsuccess/PaymentSuccess';
 import NotFound from '../pages/notfound/NotFound';
 import Homepage from '../pages/homepage/Homepage';
@@ -31,6 +32,8 @@ import RegisterSuccess from '../pages/registersuccess/RegisterSuccess';
 import Preorder from '../pages/preorder/Preorder';
 import Product from '../pages/product/Product';
 import Search from '../pages/search/Search';
+
+const socket = socketIO.connect('http://localhost:3000');
 
 const App = () => {
   const dispatch = useDispatch();
@@ -57,19 +60,21 @@ const App = () => {
               <Route path="orders" element={<AccountOrders />} />
               <Route path="orders/:orderId" element={<AccountOrderDetails />} />
               <Route path="paymentmethods" element={<AccountPaymentMethods />} />
-              <Route path="paymentsuccess" element={<PaymentSuccess />} />
-              <Route path="paymentfailure" element={<PaymentFailure />} />
               <Route path="*" element={<NotFound />} />
             </Route>
             <Route path="cart" element={<Cart />} />
-            <Route path="checkout" element={<Checkout />} >
-              <Route path="addresses" element={<AddressModalContainer />} >
-                <Route index element={<AddressListModal />} />
-                <Route path="add" element={<AddAddressModal />} />
-                <Route path="edit/:addressId" element={<EditAddressModal />} />
-                <Route path="edit/*" element={<Text>Address not found.</Text>} />
-                <Route path="*" element={<NotFound />} />
+            <Route element={<CheckoutContainer />} >
+              <Route index element={<Checkout />} />
+              <Route path="checkout" element={<Checkout />}>
+                <Route path="addresses" element={<AddressModalContainer />} >
+                  <Route index element={<AddressListModal />} />
+                  <Route path="add" element={<AddAddressModal />} />
+                  <Route path="edit/:addressId" element={<EditAddressModal />} />
+                  <Route path="edit/*" element={<Text>Address not found.</Text>} />
+                  <Route path="*" element={<NotFound />} />
+                </Route>
               </Route>
+              <Route path="checkout/paymentsuccess" element={<PaymentSuccess socket={socket} />} />
             </Route>
             <Route path="login" element={<LogIn />} />
             <Route path="preorder" element={<Preorder />} />

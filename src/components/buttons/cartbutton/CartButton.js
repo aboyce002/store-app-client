@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { Link as ReactLink } from 'react-router-dom';
 import { FiShoppingCart } from 'react-icons/fi';
-import { Icon, IconButton, Link, Text } from '@chakra-ui/react';
+import { Icon, Link, Text } from '@chakra-ui/react';
 import { getTotalQuantity } from '../../../utils/cart/cartSlice';
 
 const CartButton = () => {

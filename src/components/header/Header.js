@@ -28,59 +28,6 @@ const Header = () => {
   const isDesktopSize = useDesktopSize();
   const user = useSelector(getUser);
 
-  const renderDesktopOrMobile = () => {
-    if (isDesktopSize) return (
-      <Box sx={{ position: 'sticky', top: '0', zIndex: '2' }}>
-        <HStack spacing={30} py={1} px={5}
-          bgGradient='linear(to-r, #7E1F69, #3B0839)'
-          textStyle="header">
-          <Box minW={[0, 100, 140]} maxW={[0, 100, 140]}>
-            <ReactLink to='/'>
-              <Image objectFit="cover" src={require('../../assets/images/logo.png')} alt='Logo'></Image>
-            </ReactLink>
-          </Box>
-          <Spacer />
-          <HStack spacing={8} textStyle="headingLinks">
-            <Link as={ReactLink} to={{ pathname: "/search", search: "?condition=new" }} _activeLink={{ color: 'white' }}>New</Link>
-            <Link as={ReactLink} to={{ pathname: "/search", search: "?category=plushies" }} _activeLink={{ color: 'white' }}>Plushies</Link>
-            <Link as={ReactLink} to={{ pathname: "/search", search: "?category=charms" }} _activeLink={{ color: 'white' }}>Charms</Link>
-            <Link as={ReactLink} to={{ pathname: "/search", search: "?category=prints" }} _activeLink={{ color: 'white' }}>Prints</Link>
-            <Link as={ReactLink} to={{ pathname: "/search", search: "?category=stickers" }} _activeLink={{ color: 'white' }}>Stickers</Link>
-          </HStack>
-          <Spacer />
-          <HStack spacing={10}>
-            <Box maxW={700} w={[200, 450, 700]}>
-              <SearchBar />
-            </Box>
-            {loginRender()}
-            <CartButton />
-          </HStack>
-        </HStack>
-        <Breadcrumbs />
-      </Box>
-    )
-    // All header text is condensed into icons for mobile
-    else return (
-      <Box sx={{ position: 'sticky', top: '0', zIndex: '2' }}>
-        <HStack px={4}
-          bgGradient='linear(to-r, #7E1F69, #3B0839)'
-          textStyle="header">
-          <Box as={ReactLink} to='/' w={150}>
-            <Image objectFit="cover" src={require('../../assets/images/logo.png')} alt='Logo'></Image>
-          </Box>
-          <Spacer />
-          <HStack spacing={3}>
-            <MobileCategoryMenu />
-            <SearchBarModal />
-            {loginRender()}
-            <CartButton />
-          </HStack>
-        </HStack>
-        <Breadcrumbs />
-      </Box>
-    )
-  }
-
   const loginRender = () => {
     return (
       <RenderFromData
@@ -132,9 +79,56 @@ const Header = () => {
   // To-do: When acct is logged in, Show one box w/ name, one box w/ orders?
   return (
     <CurrentCategoryContext.Provider value={value}>
-      {useMemo(() => (
-        renderDesktopOrMobile()
-      ), [isDesktopSize, user])}
+      {isDesktopSize &&
+        <Box sx={{ position: 'sticky', top: '0', zIndex: '2' }}>
+          <HStack spacing={30} py={1} px={5}
+            bgGradient='linear(to-r, #7E1F69, #3B0839)'
+            textStyle="header">
+            <Box minW={[0, 100, 140]} maxW={[0, 100, 140]}>
+              <ReactLink to='/'>
+                <Image objectFit="cover" src={require('../../assets/images/logo.png')} alt='Logo'></Image>
+              </ReactLink>
+            </Box>
+            <Spacer />
+            <HStack spacing={8} textStyle="headingLinks">
+              <Link as={ReactLink} to={{ pathname: "/search", search: "?condition=new" }} _activeLink={{ color: 'white' }}>New</Link>
+              <Link as={ReactLink} to={{ pathname: "/search", search: "?category=plushies" }} _activeLink={{ color: 'white' }}>Plushies</Link>
+              <Link as={ReactLink} to={{ pathname: "/search", search: "?category=charms" }} _activeLink={{ color: 'white' }}>Charms</Link>
+              <Link as={ReactLink} to={{ pathname: "/search", search: "?category=prints" }} _activeLink={{ color: 'white' }}>Prints</Link>
+              <Link as={ReactLink} to={{ pathname: "/search", search: "?category=stickers" }} _activeLink={{ color: 'white' }}>Stickers</Link>
+            </HStack>
+            <Spacer />
+            <HStack spacing={10}>
+              <Box maxW={700} w={[200, 450, 700]}>
+                <SearchBar />
+              </Box>
+              {loginRender()}
+              <CartButton />
+            </HStack>
+          </HStack>
+          <Breadcrumbs />
+        </Box>
+      }
+      {!isDesktopSize &&
+        // All header text is condensed into icons for mobile
+        <Box sx={{ position: 'sticky', top: '0', zIndex: '2' }}>
+          <HStack px={4}
+            bgGradient='linear(to-r, #7E1F69, #3B0839)'
+            textStyle="header">
+            <Box as={ReactLink} to='/' w={150}>
+              <Image objectFit="cover" src={require('../../assets/images/logo.png')} alt='Logo'></Image>
+            </Box>
+            <Spacer />
+            <HStack spacing={3}>
+              <MobileCategoryMenu />
+              <SearchBarModal />
+              {loginRender()}
+              <CartButton />
+            </HStack>
+          </HStack>
+          <Breadcrumbs />
+        </Box>
+      }
     </CurrentCategoryContext.Provider>
   )
 }

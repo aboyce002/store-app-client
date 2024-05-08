@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { Link as ReactLink } from 'react-router-dom';
 import { Link, Box, HStack, VStack, Image, Container, SimpleGrid, Heading, Flex, Spacer, Divider, Text } from '@chakra-ui/react';
