@@ -33,7 +33,7 @@ import Preorder from '../pages/preorder/Preorder';
 import Product from '../pages/product/Product';
 import Search from '../pages/search/Search';
 
-const socket = socketIO.connect('http://localhost:3000');
+const socket = socketIO.connect(process.env.REACT_APP_FRONTEND_URL);
 
 const App = () => {
   const dispatch = useDispatch();

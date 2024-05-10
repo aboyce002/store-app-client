@@ -58,7 +58,7 @@ const Checkout = () => {
         elements,
         confirmParams: {
           // Make sure to change this to your payment completion page
-          return_url: "http://localhost:3000/checkout/paymentsuccess"
+          return_url: process.env.FRONTEND_URL + "/checkout/paymentsuccess"
         },
       });
 
