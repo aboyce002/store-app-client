@@ -3,7 +3,7 @@ import { HStack, VStack, Text, Box, Link, SimpleGrid } from '@chakra-ui/react'
 
 const Footer = () => {
   return (
-    <SimpleGrid columns={3} spacing={10} bgColor="#3B0839" textStyle="footer" w="full" py={2} px={5}>
+    <SimpleGrid columns={3} bgColor="#3B0839" textStyle="footer" w="full" py={3} px={5}>
       <VStack fontSize="11" align="start" spacing={0}>
         <Text>Website is a demo and does not represent the final product.</Text>
         <Text >All images are for show only and belong to their respective owners.</Text>

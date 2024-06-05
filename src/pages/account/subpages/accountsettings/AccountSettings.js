@@ -1,4 +1,4 @@
-import { useSelector  } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Box, Button, Divider, Heading, Stack, Text, useDisclosure } from '@chakra-ui/react';
 import { getUser } from '../../../../utils/user/userSlice';
 import AccountSettingsForm from '../../../../components/forms/accountsettingsform/AccountSettingsForm';

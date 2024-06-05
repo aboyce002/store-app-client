@@ -47,9 +47,9 @@ const AddressGrid = () => {
     const addresses = [...addressListList.splice(addressListList.findIndex((address) => address.id === user.main_address)), ...addressListList];
     return addresses.map((address, index) => (
       <GridItem key={address.id} bgColor="mainPurple.150" boxShadow="0 2px 4px 0 rgba(0, 0, 0, 0.15)" borderRadius="10px">
-        <Stack w="full" h="full">
+        <Stack w="full" h="full" direction="column">
           <Heading as='h2' align="start" size='md' bgColor="mainBlue.200" p={2} px={10} borderTopRadius="10px">{address.id === user.main_address ? "Primary Address" : "Address " + (index + 1)}</Heading>
-          <VStack align="start" px={10} spacing={0}>
+          <VStack align="start" pl={10} spacing={0}>
             <Text>{address.first_name} {address.last_name}</Text>
             <Text>{address.street}</Text>
             <Text>{address.city}, {address.state} {address.zip}</Text>

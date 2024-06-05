@@ -58,7 +58,7 @@ const Checkout = () => {
         elements,
         confirmParams: {
           // Make sure to change this to your payment completion page
-          return_url: process.env.FRONTEND_URL + "/checkout/paymentsuccess"
+          return_url: (process.env.REACT_APP_FRONTEND_URL + "/checkout/paymentsuccess")
         },
       });
 
@@ -70,6 +70,7 @@ const Checkout = () => {
       if (error.type === "card_error" || error.type === "validation_error") {
         setErrorMessage(error.message);
       } else {
+        console.log("stripe error: ", error.message);
         setErrorMessage("An unexpected error occurred.");
       }
 

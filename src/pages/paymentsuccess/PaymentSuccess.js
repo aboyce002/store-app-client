@@ -13,36 +13,39 @@ const PaymentSuccess = ({ socket }) => {
   const stripe = useStripe();
   const secret = useSelector(getSecret);
 
+  // TODO: Add order to DB on payment success
   const createOrder = () => {
-    
+
   }
-
-  useEffect(() => {
-    socket.on('messageResponse', (data) => setMessages([...messages, data]));
-
-    if (stripe && secret) {
-      const getStripeStatus = async () => await stripe.retrievePaymentIntent(secret).then(({ paymentIntent }) => {
-        console.log("paymentintent status: ", paymentIntent.status);
-        switch (paymentIntent.status) {
-          case "succeeded":
-            setMessage("Payment succeeded!");
-            console.log("payment success");
-            removeAll();
-            break;
-          /* case "processing":
-             setMessage("Your payment is processing.");
-             break;
-           case "requires_payment_method":
-             setMessage("Your payment was not successful, please try again.");
-             break;*/
-          default:
-            break;
-        }
-      });
-      getStripeStatus();
-    }
-
-  }, [socket, messages, stripe, secret]);
+  
+  /* Use socket to check to see if the payment was processed on Stripe's side
+    useEffect(() => {
+      socket.on('messageResponse', (data) => setMessages([...messages, data]));
+  
+      if (stripe && secret) {
+        const getStripeStatus = async () => await stripe.retrievePaymentIntent(secret).then(({ paymentIntent }) => {
+          console.log("paymentintent status: ", paymentIntent.status);
+          switch (paymentIntent.status) {
+            case "succeeded":
+              setMessage("Payment succeeded!");
+              console.log("payment success");
+              removeAll();
+              break;
+            case "processing":
+              setMessage("Your payment is processing.");
+              break;
+            case "requires_payment_method":
+              setMessage("Your payment was not successful, please try again.");
+              break;
+            default:
+              break;
+          }
+        });
+        getStripeStatus();
+      }
+  
+    }, [socket, messages, stripe, secret]);
+    */
 
   // TODO: implement post-payment email
   return (

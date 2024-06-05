@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Flex, Text } from '@chakra-ui/react';
-import { useDispatch } from 'react-redux';
-import { fetchUser } from '../utils/user/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUser, getUser } from '../utils/user/userSlice';
+import useDeepCompareEffect from 'use-deep-compare-effect'
 import socketIO from 'socket.io-client';
 import AccountContainer from './containers/accountcontainer/AccountContainer';
 import AccountAddresses from '../pages/account/subpages/addresses/addresses/AccountAddresses';
@@ -37,10 +38,11 @@ const socket = socketIO.connect(process.env.REACT_APP_FRONTEND_URL);
 
 const App = () => {
   const dispatch = useDispatch();
+  const user = useSelector(getUser);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     dispatch(fetchUser());
-  }, [dispatch]);
+  }, [dispatch, user]);
 
   return (
     <Flex className="app" direction="column" minH="100vh" textStyle="baseStyle" bg="#F0EDED">

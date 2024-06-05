@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Flex } from '@chakra-ui/react'
+import { Flex, Heading, Divider, VStack } from '@chakra-ui/react'
 import { FiMapPin, FiInbox, FiUser, } from 'react-icons/fi'
 import NavItem from './NavItem'
 
@@ -11,9 +11,8 @@ export default function Sidebar() {
 
   return (
     <Flex
-      pos="sticky"
-      left="5"
-      h="32vh"
+      h="240px"
+      align="stretch"
       marginTop="2.5vh"
       bgColor="mainPurple.150"
       boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.15)"
@@ -22,17 +21,13 @@ export default function Sidebar() {
       flexDir="column"
       justifyContent="space-between"
     >
-      <Flex
-        p="5%"
-        flexDir="column"
-        w="100%"
-        alignItems={navSize === "small" ? "center" : "flex-start"}
-        as="nav"
-      >
-        <NavItem navSize={navSize} icon={FiUser} title="Account" link="/account" />
+      <VStack alignItems="center">
+        <Heading as='h2' align="center" size='md' pt={3}>Account</Heading>
+        <Divider />
+        <NavItem navSize={navSize} icon={FiUser} title="Settings" link="/account" />
         <NavItem navSize={navSize} icon={FiMapPin} title="Addresses" link="/account/addresses" />
         <NavItem navSize={navSize} icon={FiInbox} title="Orders" link="/account/orders" />
-      </Flex>
+      </VStack>
     </Flex>
   )
 }
